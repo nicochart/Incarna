@@ -2,10 +2,12 @@ package fr.factionbedrock.incarna.block;
 
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
+import fr.factionbedrock.incarna.util.IncarnaHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
@@ -18,7 +20,7 @@ import net.minecraft.world.World;
 
 public class TeamChoiceBlock extends Block
 {
-    public static final IntProperty TEAM_INDEX = IntProperty.of("team_index", 0, 4);
+    public static final IntProperty TEAM_INDEX = IntProperty.of("team_index", 0, IncarnaTeams.MAX_INDEX);
     public static final BooleanProperty IS_LOCKED = BooleanProperty.of("is_locked");
 
     public TeamChoiceBlock(Settings settings)
@@ -38,11 +40,13 @@ public class TeamChoiceBlock extends Block
             if (previousPlayerTeam.equals(IncarnaTeams.DEFAULT.value()) && !blockTeam.equals(IncarnaTeams.DEFAULT.value()))
             {
                 player.getDataTracker().set(IncarnaTrackedData.TEAM, blockTeam);
+                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.runFunction(serverPlayer, blockTeam);}
                 world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_HARP.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
             }
             else if (!previousPlayerTeam.equals(IncarnaTeams.DEFAULT.value()) && blockTeam.equals(IncarnaTeams.DEFAULT.value()))
             {
                 player.getDataTracker().set(IncarnaTrackedData.TEAM, blockTeam);
+                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.runFunction(serverPlayer, blockTeam);}
                 world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
             }
         }
