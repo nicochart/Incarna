@@ -1,6 +1,5 @@
 package fr.factionbedrock.incarna.mixin;
 
-import fr.factionbedrock.incarna.config.ServerLoadedConfig;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -27,7 +26,7 @@ public class PlayerDeathMixin
     private void applyOnCopyFrom(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo info)
     {
         ServerPlayerEntity newPlayer = (ServerPlayerEntity) (Object) this;
-        /*... data = oldPlayer.getDataTracker().get(IncarnaTrackedData.DATA);
-        newPlayer.getDataTracker().set(IncarnaTrackedData.DATA, data);*/
+        String team = oldPlayer.getDataTracker().get(IncarnaTrackedData.TEAM);
+        newPlayer.getDataTracker().set(IncarnaTrackedData.TEAM, team);
     }
 }

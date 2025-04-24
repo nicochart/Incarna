@@ -12,22 +12,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerEntity.class)
 public class PlayerNbtMixin
 {
-    private static String data = "data_id_in_nbts";
+    private static String team = "team";
 
     @Inject(at = @At("RETURN"), method = "readCustomDataFromNbt")
     private void read(NbtCompound nbt, CallbackInfo info)
     {
         PlayerEntity player = (PlayerEntity) (Object) this;
-        /*if (nbt.contains(data, NbtElement.TYPE))
+        if (nbt.contains(team, NbtElement.STRING_TYPE))
         {
-            player.getDataTracker().set(IncarnaTrackedData.DATA, nbt.getInt(data));
-        }*/
+            player.getDataTracker().set(IncarnaTrackedData.TEAM, nbt.getString(team));
+        }
     }
 
     @Inject(at = @At("RETURN"), method = "writeCustomDataToNbt")
     private void write(NbtCompound nbt, CallbackInfo info)
     {
         PlayerEntity player = (PlayerEntity) (Object) this;
-        //nbt.putInt(data, player.getDataTracker().get(IncarnaTrackedData.DATA));
+        nbt.putString(team, player.getDataTracker().get(IncarnaTrackedData.TEAM));
     }
 }

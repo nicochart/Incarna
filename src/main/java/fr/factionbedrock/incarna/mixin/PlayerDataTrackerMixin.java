@@ -1,5 +1,6 @@
 package fr.factionbedrock.incarna.mixin;
 
+import fr.factionbedrock.incarna.registry.IncarnaTeams;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,6 +15,6 @@ public class PlayerDataTrackerMixin
 	@Inject(at = @At("RETURN"), method = "initDataTracker")
 	private void init(DataTracker.Builder builder, CallbackInfo info)
 	{
-		//builder.add(IncarnaTrackedData.DATA, ...);
+		builder.add(IncarnaTrackedData.TEAM, IncarnaTeams.DEFAULT);
 	}
 }
