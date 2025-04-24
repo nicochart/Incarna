@@ -1,5 +1,6 @@
 package fr.factionbedrock.incarna;
 
+import fr.factionbedrock.incarna.registry.IncarnaBlocks;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -16,6 +17,7 @@ public class Incarna implements ModInitializer, ClientModInitializer
 
 	@Override public void onInitialize()
 	{
+		IncarnaBlocks.load();
 		IncarnaTrackedData.load();
 	}
 
