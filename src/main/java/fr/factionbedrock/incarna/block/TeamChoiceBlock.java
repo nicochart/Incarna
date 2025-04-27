@@ -1,5 +1,6 @@
 package fr.factionbedrock.incarna.block;
 
+import fr.factionbedrock.incarna.choice.IncarnaTeam;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
 import fr.factionbedrock.incarna.util.IncarnaHelper;
@@ -35,18 +36,18 @@ public class TeamChoiceBlock extends Block
     {
         if (entity instanceof PlayerEntity player)
         {
-            String blockTeam = IncarnaTeams.TEAMS.get(state.get(TEAM_INDEX));
-            String previousPlayerTeam = player.getDataTracker().get(IncarnaTrackedData.TEAM);
-            if (previousPlayerTeam.equals(IncarnaTeams.DEFAULT.value()) && !blockTeam.equals(IncarnaTeams.DEFAULT.value()))
+            IncarnaTeam blockTeam = IncarnaTeams.TEAM_INDEXES.get(state.get(TEAM_INDEX));
+            IncarnaTeam previousPlayerTeam = IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));
+            if (previousPlayerTeam == IncarnaTeams.DEFAULT && blockTeam != IncarnaTeams.DEFAULT)
             {
-                player.getDataTracker().set(IncarnaTrackedData.TEAM, blockTeam);
-                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.runFunction(serverPlayer, blockTeam);}
+                player.getDataTracker().set(IncarnaTrackedData.TEAM, blockTeam.name());
+                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.runFunction(serverPlayer, blockTeam.name());}
                 world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_HARP.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
             }
-            else if (!previousPlayerTeam.equals(IncarnaTeams.DEFAULT.value()) && blockTeam.equals(IncarnaTeams.DEFAULT.value()))
+            else if (previousPlayerTeam != IncarnaTeams.DEFAULT && blockTeam == IncarnaTeams.DEFAULT)
             {
-                player.getDataTracker().set(IncarnaTrackedData.TEAM, blockTeam);
-                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.runFunction(serverPlayer, blockTeam);}
+                player.getDataTracker().set(IncarnaTrackedData.TEAM, blockTeam.name());
+                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.runFunction(serverPlayer, blockTeam.name());}
                 world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
             }
         }
@@ -73,7 +74,7 @@ public class TeamChoiceBlock extends Block
     private static int getNextIndex(int previousIndex)
     {
         int newIndex = previousIndex + 1;
-        while (!IncarnaTeams.TEAMS.containsKey(newIndex))
+        while (!IncarnaTeams.TEAM_INDEXES.containsKey(newIndex))
         {
             if (newIndex > IncarnaTeams.MAX_INDEX) {newIndex = 0;}
             else {newIndex++;}

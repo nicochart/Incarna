@@ -15,6 +15,6 @@ public class PlayerDataTrackerMixin
 	@Inject(at = @At("RETURN"), method = "initDataTracker")
 	private void init(DataTracker.Builder builder, CallbackInfo info)
 	{
-		builder.add(IncarnaTrackedData.TEAM, IncarnaTeams.DEFAULT.value());
+		builder.add(IncarnaTrackedData.TEAM, IncarnaTeams.DEFAULT.name());
 	}
 }
