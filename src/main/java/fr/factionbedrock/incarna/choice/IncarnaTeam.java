@@ -1,11 +1,23 @@
 package fr.factionbedrock.incarna.choice;
 
+import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class IncarnaTeam
 {
     private final int id;
     private final String name;
+    private final List<IncarnaPower> powers = new ArrayList<>();
+
+    public IncarnaTeam(int index, String name, IncarnaPower ... powers)
+    {
+        this(index, name);
+        this.powers.addAll(Arrays.asList(powers));
+    }
 
     public IncarnaTeam(int index, String name)
     {
@@ -20,4 +32,5 @@ public class IncarnaTeam
 
     public int id() {return id;}
     public String name() {return name;}
+    public List<IncarnaPower> powers() {return powers;}
 }

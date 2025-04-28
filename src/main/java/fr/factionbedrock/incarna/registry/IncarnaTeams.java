@@ -10,8 +10,8 @@ public class IncarnaTeams
     public static LinkedHashMap<Integer, IncarnaTeam> TEAM_INDEXES = new LinkedHashMap<Integer, IncarnaTeam>();
     public static LinkedHashMap<String, IncarnaTeam> TEAM_NAMES = new LinkedHashMap<String, IncarnaTeam>();
     public static  IncarnaTeam DEFAULT = new  IncarnaTeam(0, "default");
-    public static  IncarnaTeam OVERWORLD = new  IncarnaTeam(1, "overworld");
-    public static  IncarnaTeam NETHER = new  IncarnaTeam(2, "nether");
-    public static  IncarnaTeam END = new  IncarnaTeam(3, "end");
-    public static  IncarnaTeam AERIAL_HELL = new  IncarnaTeam(4, "aerial_hell");
+    public static  IncarnaTeam OVERWORLD = new  IncarnaTeam(1, "overworld", IncarnaPowers.CONSTANT_SPEED);
+    public static  IncarnaTeam NETHER = new  IncarnaTeam(2, "nether", IncarnaPowers.CONSTANT_FIRE_RESISTANCE);
+    public static  IncarnaTeam END = new  IncarnaTeam(3, "end", IncarnaPowers.CONSTANT_NIGHT_VISION);
+    public static  IncarnaTeam AERIAL_HELL = new  IncarnaTeam(4, "aerial_hell", IncarnaPowers.CONSTANT_SLOW_FALLING);
 }
