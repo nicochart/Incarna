@@ -1,6 +1,7 @@
 package fr.factionbedrock.incarna.mixin;
 
 import fr.factionbedrock.incarna.choice.IncarnaTeam;
+import fr.factionbedrock.incarna.power.AttributeModifierPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.power.IncarnaTickablePower;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
@@ -25,6 +26,11 @@ public class PlayerTickMixin
             if (power instanceof IncarnaTickablePower tickablePower)
             {
                 tickablePower.tryTick(player, player.getServerWorld().getTime());
+            }
+
+            if (power instanceof AttributeModifierPower modifierPower)
+            {
+                modifierPower.updatePlayerAttributeModifier(player);
             }
         }
     }
