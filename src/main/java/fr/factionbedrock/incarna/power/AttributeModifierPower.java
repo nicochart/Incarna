@@ -13,6 +13,7 @@ import java.util.function.Function;
 public class AttributeModifierPower extends IncarnaPower
 {
     public static final Identifier SPEED_MODIFIER = Incarna.id("speed_modifier");
+    public static final Identifier JUMP_STRENGTH_MODIFIER = Incarna.id("jump_strength_modifier");
 
     private final RegistryEntry<EntityAttribute> attribute;
     private final Identifier modifierId;
@@ -38,6 +39,15 @@ public class AttributeModifierPower extends IncarnaPower
         {
             attribute.removeModifier(this.modifierId);
             attribute.addTemporaryModifier(this.getModifier(1));
+        }
+    }
+
+    public void removePlayerAttributeModifier(ServerPlayerEntity player)
+    {
+        EntityAttributeInstance attribute = player.getAttributeInstance(this.attribute);
+        if (attribute != null)
+        {
+            attribute.removeModifier(this.modifierId);
         }
     }
 

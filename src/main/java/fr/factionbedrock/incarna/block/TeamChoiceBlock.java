@@ -41,13 +41,13 @@ public class TeamChoiceBlock extends Block
             if (previousPlayerTeam == IncarnaTeams.DEFAULT && blockTeam != IncarnaTeams.DEFAULT)
             {
                 player.getDataTracker().set(IncarnaTrackedData.TEAM, blockTeam.name());
-                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.runFunction(serverPlayer, blockTeam.name());}
+                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.onPlayerChangeTeam(serverPlayer, previousPlayerTeam, blockTeam);}
                 world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_HARP.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
             }
             else if (previousPlayerTeam != IncarnaTeams.DEFAULT && blockTeam == IncarnaTeams.DEFAULT)
             {
                 player.getDataTracker().set(IncarnaTrackedData.TEAM, blockTeam.name());
-                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.runFunction(serverPlayer, blockTeam.name());}
+                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.onPlayerChangeTeam(serverPlayer, previousPlayerTeam, blockTeam);}
                 world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
             }
         }
