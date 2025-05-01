@@ -1,5 +1,6 @@
 package fr.factionbedrock.incarna;
 
+import fr.factionbedrock.incarna.event.PlayerEvents;
 import fr.factionbedrock.incarna.registry.IncarnaBlocks;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
 import net.fabricmc.api.ClientModInitializer;
@@ -19,6 +20,7 @@ public class Incarna implements ModInitializer, ClientModInitializer
 	{
 		IncarnaBlocks.load();
 		IncarnaTrackedData.load();
+		PlayerEvents.registerUseItemCallback();
 	}
 
 	@Override public void onInitializeClient()

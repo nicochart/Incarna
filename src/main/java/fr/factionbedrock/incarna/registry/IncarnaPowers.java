@@ -9,6 +9,8 @@ import net.minecraft.entity.effect.StatusEffects;
 
 public class IncarnaPowers
 {
+    public static IncarnaPower VEGAN = new IncarnaPower();
+    public static IncarnaPower CARNIVORE = new IncarnaPower();
     public static IncarnaPower CONSTANT_FIRE_RESISTANCE_EFFECT = new ConstantStatusEffectPower(StatusEffects.FIRE_RESISTANCE);
     public static IncarnaPower CONSTANT_SLOW_FALLING_EFFECT = new ConstantStatusEffectPower(StatusEffects.SLOW_FALLING);
     public static IncarnaPower CONSTANT_SPEED_EFFECT = new ConstantStatusEffectPower(StatusEffects.SPEED);
