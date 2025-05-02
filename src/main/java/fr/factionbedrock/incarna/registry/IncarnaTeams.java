@@ -12,6 +12,6 @@ public class IncarnaTeams
     public static  IncarnaTeam DEFAULT = new  IncarnaTeam(0, "default");
     public static  IncarnaTeam OVERWORLD = new  IncarnaTeam(1, "overworld", IncarnaPowers.CONSTANT_SPEED_EFFECT, IncarnaPowers.CONSTANT_JUMP_STRENGTH_MODIFIER, IncarnaPowers.VEGAN);
     public static  IncarnaTeam NETHER = new  IncarnaTeam(2, "nether", IncarnaPowers.CONSTANT_FIRE_RESISTANCE_EFFECT, IncarnaPowers.CARNIVORE);
-    public static  IncarnaTeam END = new  IncarnaTeam(3, "end", IncarnaPowers.CONSTANT_NIGHT_VISION_EFFECT, IncarnaPowers.CONSTANT_SPEED_MODIFIER);
+    public static  IncarnaTeam END = new  IncarnaTeam(3, "end", IncarnaPowers.CONSTANT_NIGHT_VISION_EFFECT, IncarnaPowers.CONSTANT_SPEED_MODIFIER, IncarnaPowers.INCREASED_FALL_DAMAGE);
     public static  IncarnaTeam AERIAL_HELL = new  IncarnaTeam(4, "aerial_hell", IncarnaPowers.CONSTANT_SLOW_FALLING_EFFECT);
 }

@@ -30,7 +30,7 @@ public class PlayerTickMixin
 
             if (power instanceof AttributeModifierPower modifierPower)
             {
-                modifierPower.updatePlayerAttributeModifier(player);
+                modifierPower.updatePlayerAttributeModifier(player, 1);
             }
         }
     }

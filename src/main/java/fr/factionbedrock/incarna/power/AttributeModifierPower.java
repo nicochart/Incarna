@@ -1,6 +1,7 @@
 package fr.factionbedrock.incarna.power;
 
 import fr.factionbedrock.incarna.Incarna;
+import fr.factionbedrock.incarna.util.ModifierInfo;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -32,13 +33,13 @@ public class AttributeModifierPower extends IncarnaPower
         this.modifierOperation = modifierOperation;
     }
 
-    public void updatePlayerAttributeModifier(ServerPlayerEntity player)
+    public void updatePlayerAttributeModifier(ServerPlayerEntity player, int powerLevel)
     {
         EntityAttributeInstance attribute = player.getAttributeInstance(this.attribute);
         if (attribute != null)
         {
             attribute.removeModifier(this.modifierId);
-            attribute.addTemporaryModifier(this.getModifier(1));
+            attribute.addTemporaryModifier(this.getModifier(powerLevel));
         }
     }
 
@@ -61,6 +62,4 @@ public class AttributeModifierPower extends IncarnaPower
     }
 
     public Identifier getId() {return modifierId;}
-
-    public record ModifierInfo(double baseModifierValue, int level) {}
 }
