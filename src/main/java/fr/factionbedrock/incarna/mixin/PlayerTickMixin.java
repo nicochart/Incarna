@@ -25,7 +25,7 @@ public class PlayerTickMixin
         {
             if (power instanceof IncarnaTickablePower tickablePower)
             {
-                tickablePower.tryTick(player, player.getServerWorld().getTime());
+                tickablePower.tryTick(player, player.getServerWorld().getTime(), 1);
             }
 
             if (power instanceof AttributeModifierPower modifierPower)

@@ -22,7 +22,7 @@ public class ConstantStatusEffectPower extends IncarnaTickablePower
         this(statusEffect, 60);
     }
 
-    @Override protected void tick(ServerPlayerEntity player)
+    @Override protected void tick(ServerPlayerEntity player, int powerLevel)
     {
         if (!player.hasStatusEffect(statusEffect) || player.getStatusEffect(statusEffect).getDuration() < minDuration)
         {

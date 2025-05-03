@@ -15,10 +15,10 @@ public abstract class IncarnaTickablePower extends IncarnaPower
         this.updateInterval = updateInterval;
     }
 
-    public void tryTick(ServerPlayerEntity player, long worldTime)
+    public void tryTick(ServerPlayerEntity player, long worldTime, int powerLevel)
     {
-        if (updateInterval == 1 || worldTime % this.updateInterval == 0) {this.tick(player);}
+        if (updateInterval == 1 || worldTime % this.updateInterval == 0) {this.tick(player, powerLevel);}
     }
 
-    protected abstract void tick(ServerPlayerEntity player);
+    protected abstract void tick(ServerPlayerEntity player, int powerLevel);
 }
