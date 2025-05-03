@@ -6,11 +6,13 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.item.Items;
 
 public class IncarnaPowers
 {
-    public static IncarnaPower VEGAN = new IncarnaPower();
-    public static IncarnaPower CARNIVORE = new IncarnaPower();
+    public static IncarnaPower VEGAN = new FoodRestrictionPower((stack) -> {return !stack.isIn(IncarnaTags.Items.MEAT);});
+    public static IncarnaPower CARNIVORE = new FoodRestrictionPower((stack) -> {return stack.isIn(IncarnaTags.Items.MEAT);});
+    public static IncarnaPower PREVENT_BOW_USE = new ItemUseRestrictionPower((stack) -> {return !stack.isOf(Items.BOW);});
     public static IncarnaPower CONSTANT_FIRE_RESISTANCE_EFFECT = new ConstantStatusEffectPower(StatusEffects.FIRE_RESISTANCE);
     public static IncarnaPower CONSTANT_SLOW_FALLING_EFFECT = new ConstantStatusEffectPower(StatusEffects.SLOW_FALLING);
     public static IncarnaPower CONSTANT_SPEED_EFFECT = new ConstantStatusEffectPower(StatusEffects.SPEED);
