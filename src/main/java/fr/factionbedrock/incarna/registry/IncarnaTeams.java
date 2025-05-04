@@ -10,7 +10,7 @@ import java.util.List;
 
 public class IncarnaTeams
 {
-    public static List<IncarnaSpecie> DEFAULT_SPECIES = new ArrayList<>();
+    public static List<IncarnaSpecie> DEFAULT_SPECIES = new ArrayList<>(Arrays.asList(IncarnaSpecies.DEFAULT));
     public static List<IncarnaSpecie> OVERWORLD_SPECIES = new ArrayList<>(Arrays.asList(IncarnaSpecies.ELF));
     public static List<IncarnaSpecie> NETHER_SPECIES = new ArrayList<>(Arrays.asList(IncarnaSpecies.NETHERIAN));
     public static List<IncarnaSpecie> END_SPECIES = new ArrayList<>(Arrays.asList(IncarnaSpecies.ENDERIAN));

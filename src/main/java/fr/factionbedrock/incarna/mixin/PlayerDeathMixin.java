@@ -27,6 +27,8 @@ public class PlayerDeathMixin
     {
         ServerPlayerEntity newPlayer = (ServerPlayerEntity) (Object) this;
         String team = oldPlayer.getDataTracker().get(IncarnaTrackedData.TEAM);
+        String species = oldPlayer.getDataTracker().get(IncarnaTrackedData.SPECIES);
         newPlayer.getDataTracker().set(IncarnaTrackedData.TEAM, team);
+        newPlayer.getDataTracker().set(IncarnaTrackedData.SPECIES, species);
     }
 }

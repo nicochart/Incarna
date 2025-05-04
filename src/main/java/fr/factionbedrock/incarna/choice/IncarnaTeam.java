@@ -25,6 +25,11 @@ public class IncarnaTeam extends IncarnaChoice
         this.available_species = available_species;
     }
 
+    public boolean allowsSpecies(IncarnaSpecie specie)
+    {
+        return this.available_species.contains(specie);
+    }
+
     @Override protected void addSelfToMaps()
     {
         this.getIndexesMap().put(this.id(), this);

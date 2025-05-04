@@ -21,7 +21,7 @@ public class IncarnaSpecie extends IncarnaChoice
         this.getIndexesMap().put(this.id(), this);
         this.getNamesMap().put(this.name(), this);
     }
-    
+
     @Override protected void doOtherUpdates(int index, String name)
     {
         if (IncarnaSpecies.MAX_INDEX < index) {IncarnaSpecies.MAX_INDEX = index;}

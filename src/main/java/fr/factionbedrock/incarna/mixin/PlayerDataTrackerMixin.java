@@ -1,5 +1,6 @@
 package fr.factionbedrock.incarna.mixin;
 
+import fr.factionbedrock.incarna.registry.IncarnaSpecies;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
 import net.minecraft.entity.data.DataTracker;
@@ -16,5 +17,6 @@ public class PlayerDataTrackerMixin
 	private void init(DataTracker.Builder builder, CallbackInfo info)
 	{
 		builder.add(IncarnaTrackedData.TEAM, IncarnaTeams.DEFAULT.name());
+		builder.add(IncarnaTrackedData.SPECIES, IncarnaSpecies.DEFAULT.name());
 	}
 }

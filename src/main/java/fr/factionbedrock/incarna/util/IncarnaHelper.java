@@ -1,12 +1,9 @@
 package fr.factionbedrock.incarna.util;
 
 import fr.factionbedrock.incarna.Incarna;
-import fr.factionbedrock.incarna.choice.IncarnaTeam;
+import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.power.AttributeModifierPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
-import fr.factionbedrock.incarna.power.IncarnaTickablePower;
-import fr.factionbedrock.incarna.registry.IncarnaTeams;
-import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.function.CommandFunction;
@@ -18,10 +15,10 @@ import java.util.Optional;
 
 public class IncarnaHelper
 {
-    public static void onPlayerChangeTeam(ServerPlayerEntity player, IncarnaTeam previousTeam, IncarnaTeam newTeam)
+    public static void onPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousChoice, IncarnaChoice newChoice)
     {
-        runFunction(player, newTeam.name());
-        removeModifiersOnPlayerChangeTeam(player, previousTeam);
+        runFunction(player, newChoice.name());
+        removeModifiersOnPlayerChangeTeamOrSpecies(player, previousChoice);
     }
 
     public static void runFunction(ServerPlayerEntity user, String functionName)
@@ -38,7 +35,7 @@ public class IncarnaHelper
         });
     }
 
-    public static void removeModifiersOnPlayerChangeTeam(ServerPlayerEntity player, IncarnaTeam previousTeam)
+    public static void removeModifiersOnPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousTeam)
     {
         for (IncarnaPower power : previousTeam.powers())
         {
