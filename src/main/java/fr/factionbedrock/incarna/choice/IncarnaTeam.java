@@ -3,34 +3,46 @@ package fr.factionbedrock.incarna.choice;
 import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
-public class IncarnaTeam
+public class IncarnaTeam extends IncarnaChoice
 {
-    private final int id;
-    private final String name;
-    private final List<IncarnaPower> powers = new ArrayList<>();
+    private final List<IncarnaSpecie> available_species;
 
-    public IncarnaTeam(int index, String name, IncarnaPower ... powers)
+    @Override protected LinkedHashMap<Integer, IncarnaTeam> getIndexesMap() {return IncarnaTeams.TEAM_INDEXES;}
+    @Override protected LinkedHashMap<String, IncarnaTeam> getNamesMap() {return IncarnaTeams.TEAM_NAMES;}
+
+    public IncarnaTeam(int index, String name, List<IncarnaSpecie> available_species, IncarnaPower ... powers)
     {
-        this(index, name);
-        this.powers.addAll(Arrays.asList(powers));
+        super(index, name, powers);
+        this.available_species = available_species;
     }
 
-    public IncarnaTeam(int index, String name)
+    public IncarnaTeam(int index, String name, List<IncarnaSpecie> available_species)
     {
-        if (IncarnaTeams.TEAM_INDEXES.containsKey(index)) {throw new IllegalArgumentException("Incarna Teams Error : team index "+index+" is used in more than one team.");}
-        if (IncarnaTeams.TEAM_NAMES.containsKey(name)) {throw new IllegalArgumentException("Incarna Teams Error : team name "+name+" is used in more than one team.");}
-        this.id = index;
-        this.name = name;
-        IncarnaTeams.TEAM_INDEXES.put(this.id, this);
-        IncarnaTeams.TEAM_NAMES.put(this.name, this);
+        super(index, name);
+        this.available_species = available_species;
+    }
+
+    @Override protected void addSelfToMaps()
+    {
+        this.getIndexesMap().put(this.id(), this);
+        this.getNamesMap().put(this.name(), this);
+    }
+
+    @Override protected void doOtherUpdates(int index, String name)
+    {
         if (IncarnaTeams.MAX_INDEX < index) {IncarnaTeams.MAX_INDEX = index;}
     }
 
-    public int id() {return id;}
-    public String name() {return name;}
-    public List<IncarnaPower> powers() {return powers;}
+    @Override protected String getIndexError(int index)
+    {
+        return "Incarna Teams Error : team index "+index+" is used in more than one team.";
+    }
+
+    @Override protected String getNameError(String name)
+    {
+        return "Incarna Teams Error : team name "+name+" is used in more than one team.";
+    }
 }
