@@ -1,10 +1,8 @@
 package fr.factionbedrock.incarna.event;
 
-import fr.factionbedrock.incarna.choice.IncarnaTeam;
 import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.power.ItemUseRestrictionPower;
-import fr.factionbedrock.incarna.registry.IncarnaTeams;
-import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
+import fr.factionbedrock.incarna.util.PlayerHelper;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.TypedActionResult;
@@ -17,9 +15,8 @@ public class PlayerEvents
         {
             ItemStack stack = player.getStackInHand(hand);
             if (player.isCreative() || player.isSpectator()) {return TypedActionResult.pass(stack);}
-            IncarnaTeam playerTeam = IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));
             boolean canUse = true;
-            for (IncarnaPower power : playerTeam.powers())
+            for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
             {
                 if (power instanceof ItemUseRestrictionPower itemRestrictionPower)
                 {

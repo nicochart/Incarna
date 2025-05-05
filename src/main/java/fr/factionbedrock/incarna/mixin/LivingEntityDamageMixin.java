@@ -1,11 +1,9 @@
 package fr.factionbedrock.incarna.mixin;
 
-import fr.factionbedrock.incarna.choice.IncarnaTeam;
 import fr.factionbedrock.incarna.power.CancelDamageSufferedPower;
 import fr.factionbedrock.incarna.power.DamageSufferedModifierPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
-import fr.factionbedrock.incarna.registry.IncarnaTeams;
-import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
+import fr.factionbedrock.incarna.util.PlayerHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,9 +24,7 @@ public class LivingEntityDamageMixin
         if (entity instanceof PlayerEntity player)
         {
             float modifiedAmount = amount;
-            IncarnaTeam playerTeam = IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));
-
-            for (IncarnaPower power : playerTeam.powers())
+            for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
             {
                 if (power instanceof DamageSufferedModifierPower damageModifierPower)
                 {
@@ -47,9 +43,7 @@ public class LivingEntityDamageMixin
 
         if (entity instanceof PlayerEntity player)
         {
-            IncarnaTeam playerTeam = IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));
-
-            for (IncarnaPower power : playerTeam.powers())
+            for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
             {
                 if (power instanceof CancelDamageSufferedPower cancelDamagePower && cancelDamagePower.shouldCancel(damageSource))
                 {

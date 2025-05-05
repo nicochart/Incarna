@@ -35,9 +35,9 @@ public class IncarnaHelper
         });
     }
 
-    public static void removeModifiersOnPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousTeam)
+    public static void removeModifiersOnPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousChoice)
     {
-        for (IncarnaPower power : previousTeam.powers())
+        for (IncarnaPower power : previousChoice.powers())
         {
             if (power instanceof AttributeModifierPower modifierPower)
             {
