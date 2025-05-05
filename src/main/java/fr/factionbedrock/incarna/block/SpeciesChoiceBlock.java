@@ -6,6 +6,7 @@ import fr.factionbedrock.incarna.registry.IncarnaSpecies;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
 import fr.factionbedrock.incarna.util.IncarnaHelper;
+import fr.factionbedrock.incarna.util.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -16,6 +17,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -47,10 +49,10 @@ public class SpeciesChoiceBlock extends Block
                 if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousPlayerSpecies, blockSpecies);}
                 world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_HARP.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
             }
-            else if (previousPlayerSpecies != IncarnaSpecies.DEFAULT && blockSpecies == IncarnaSpecies.DEFAULT && playerTeam.allowsSpecies(blockSpecies))
+            else if (previousPlayerSpecies != IncarnaSpecies.DEFAULT && blockSpecies == IncarnaSpecies.DEFAULT)
             {
-                player.getDataTracker().set(IncarnaTrackedData.SPECIES, blockSpecies.name());
-                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousPlayerSpecies, blockSpecies);}
+                PlayerHelper.resetPlayerSpecies(player);
+                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousPlayerSpecies, IncarnaSpecies.DEFAULT);}
                 world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
             }
         }
@@ -58,16 +60,21 @@ public class SpeciesChoiceBlock extends Block
 
     @Override protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit)
     {
+        int currentIndex = state.get(SPECIES_INDEX);
+        boolean locked = state.get(IS_LOCKED);
         if (player.isCreative() && player.isSneaking())
         {
-            world.setBlockState(pos, state.with(IS_LOCKED, !state.get(IS_LOCKED)));
+            world.setBlockState(pos, state.with(IS_LOCKED, !locked));
+            player.sendMessage(Text.literal("Block is now "+(locked? "un" : "")+"locked with Species : "+IncarnaSpecies.SPECIES_INDEXES.get(currentIndex).name()), true);
             world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
         }
         else
         {
-            if (!state.get(IS_LOCKED))
+            if (!locked)
             {
-                world.setBlockState(pos, state.with(SPECIES_INDEX, getNextIndex(state.get(SPECIES_INDEX))));
+                int newIndex = getNextIndex(currentIndex);
+                world.setBlockState(pos, state.with(SPECIES_INDEX, newIndex));
+                player.sendMessage(Text.literal("Block Species : "+IncarnaSpecies.SPECIES_INDEXES.get(newIndex).name()), true);
                 world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_BIT.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
             }
         }

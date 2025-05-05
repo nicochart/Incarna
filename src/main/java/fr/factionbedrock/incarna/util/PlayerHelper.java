@@ -23,4 +23,13 @@ public class PlayerHelper
         powerList.addAll(playerSpecies.powers());
         return powerList;
     }
+
+    public static void resetPlayerChoices(PlayerEntity player)
+    {
+        resetPlayerTeam(player);
+        resetPlayerSpecies(player);
+    }
+
+    public static void resetPlayerTeam(PlayerEntity player) {player.getDataTracker().set(IncarnaTrackedData.TEAM, IncarnaTeams.DEFAULT.name());}
+    public static void resetPlayerSpecies(PlayerEntity player) {player.getDataTracker().set(IncarnaTrackedData.SPECIES, IncarnaSpecies.DEFAULT.name());}
 }

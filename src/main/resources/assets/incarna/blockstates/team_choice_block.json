@@ -1,0 +1,7 @@
+{
+    "variants": {
+      "": {
+          "model": "incarna:block/team_choice_block"
+    }
+  }
+}

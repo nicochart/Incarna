@@ -1,0 +1,7 @@
+{
+    "variants": {
+      "": {
+          "model": "incarna:block/species_choice_block"
+    }
+  }
+}
