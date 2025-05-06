@@ -15,6 +15,8 @@ public class AttributeModifierPower extends IncarnaPower
 {
     public static final Identifier SPEED_MODIFIER = Incarna.id("speed_modifier");
     public static final Identifier JUMP_STRENGTH_MODIFIER = Incarna.id("jump_strength_modifier");
+    public static final Identifier ARMOR_MODIFIER = Incarna.id("armor_modifier");
+    public static final Identifier SCALE_MODIFIER = Incarna.id("scale_modifier");
 
     private final RegistryEntry<EntityAttribute> attribute;
     private final Identifier modifierId;
