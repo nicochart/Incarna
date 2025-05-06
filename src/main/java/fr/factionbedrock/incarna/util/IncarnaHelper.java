@@ -15,12 +15,6 @@ import java.util.Optional;
 
 public class IncarnaHelper
 {
-    public static void onPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousChoice, IncarnaChoice newChoice)
-    {
-        runFunction(player, newChoice.name());
-        removeModifiersOnPlayerChangeTeamOrSpecies(player, previousChoice);
-    }
-
     public static void runFunction(ServerPlayerEntity user, String functionName)
     {
         MinecraftServer server = user.server;
@@ -33,16 +27,5 @@ public class IncarnaHelper
             ServerCommandSource source = server.getCommandSource().withEntity(user).withWorld(world).withPosition(user.getPos()).withSilent();
             server.getCommandFunctionManager().execute(function, source);
         });
-    }
-
-    public static void removeModifiersOnPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousChoice)
-    {
-        for (IncarnaPower power : previousChoice.powers())
-        {
-            if (power instanceof AttributeModifierPower modifierPower)
-            {
-                modifierPower.removePlayerAttributeModifier(player);
-            }
-        }
     }
 }

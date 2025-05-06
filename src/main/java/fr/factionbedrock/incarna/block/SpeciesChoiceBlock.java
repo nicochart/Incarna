@@ -1,94 +1,36 @@
 package fr.factionbedrock.incarna.block;
 
+import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.choice.IncarnaSpecie;
-import fr.factionbedrock.incarna.choice.IncarnaTeam;
 import fr.factionbedrock.incarna.registry.IncarnaSpecies;
-import fr.factionbedrock.incarna.registry.IncarnaTeams;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
-import fr.factionbedrock.incarna.util.IncarnaHelper;
-import fr.factionbedrock.incarna.util.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.entity.data.TrackedData;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
-public class SpeciesChoiceBlock extends Block
+import java.util.LinkedHashMap;
+
+public class SpeciesChoiceBlock extends ChoiceBlock
 {
     public static final IntProperty SPECIES_INDEX = IntProperty.of("species_index", 0, IncarnaSpecies.MAX_INDEX);
-    public static final BooleanProperty IS_LOCKED = BooleanProperty.of("is_locked");
 
     public SpeciesChoiceBlock(Settings settings)
     {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(SPECIES_INDEX, 0).with(IS_LOCKED, false));
+        this.setDefaultState(this.stateManager.getDefaultState().with(SPECIES_INDEX, 0));
     }
 
-    @Override protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {builder.add(SPECIES_INDEX, IS_LOCKED);}
+    @Override protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {super.appendProperties(builder); builder.add(SPECIES_INDEX);}
 
-    @Override public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity)
-    {
-        if (entity instanceof PlayerEntity player)
-        {
-            IncarnaSpecie blockSpecies = IncarnaSpecies.SPECIES_INDEXES.get(state.get(SPECIES_INDEX));
-            IncarnaSpecie previousPlayerSpecies = IncarnaSpecies.SPECIES_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.SPECIES));
-            IncarnaTeam playerTeam = IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));
-            if (previousPlayerSpecies == IncarnaSpecies.DEFAULT && blockSpecies != IncarnaSpecies.DEFAULT && playerTeam.allowsSpecies(blockSpecies))
-            {
-                player.getDataTracker().set(IncarnaTrackedData.SPECIES, blockSpecies.name());
-                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousPlayerSpecies, blockSpecies);}
-                world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_HARP.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
-            }
-            else if (previousPlayerSpecies != IncarnaSpecies.DEFAULT && blockSpecies == IncarnaSpecies.DEFAULT)
-            {
-                PlayerHelper.resetPlayerSpecies(player);
-                if (player instanceof ServerPlayerEntity serverPlayer) {IncarnaHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousPlayerSpecies, IncarnaSpecies.DEFAULT);}
-                world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
-            }
-        }
-    }
+    @Override protected int getMaxIndex() {return IncarnaSpecies.MAX_INDEX;}
 
-    @Override protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit)
-    {
-        int currentIndex = state.get(SPECIES_INDEX);
-        boolean locked = state.get(IS_LOCKED);
-        if (player.isCreative() && player.isSneaking())
-        {
-            world.setBlockState(pos, state.with(IS_LOCKED, !locked));
-            player.sendMessage(Text.literal("Block is now "+(locked? "un" : "")+"locked with Species : "+IncarnaSpecies.SPECIES_INDEXES.get(currentIndex).name()), true);
-            world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
-        }
-        else
-        {
-            if (!locked)
-            {
-                int newIndex = getNextIndex(currentIndex);
-                world.setBlockState(pos, state.with(SPECIES_INDEX, newIndex));
-                player.sendMessage(Text.literal("Block Species : "+IncarnaSpecies.SPECIES_INDEXES.get(newIndex).name()), true);
-                world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_BIT.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
-            }
-        }
-        return super.onUse(state, world, pos, player, hit);
-    }
+    @Override protected IntProperty getChoiceIndexProperty() {return SPECIES_INDEX;}
+    @Override protected LinkedHashMap<Integer, IncarnaSpecie> getIndexesToChoiceList() {return IncarnaSpecies.SPECIES_INDEXES;}
+    @Override protected LinkedHashMap<String, IncarnaSpecie> getNamesToChoiceList() {return IncarnaSpecies.SPECIES_NAMES;}
+    @Override protected TrackedData<String> getTrackedData() {return IncarnaTrackedData.SPECIES;}
+    @Override protected IncarnaChoice getDefaultChoice() {return IncarnaSpecies.DEFAULT;}
 
-    private static int getNextIndex(int previousIndex)
-    {
-        int newIndex = previousIndex + 1;
-        while (!IncarnaSpecies.SPECIES_INDEXES.containsKey(newIndex))
-        {
-            if (newIndex > IncarnaSpecies.MAX_INDEX) {newIndex = 0;}
-            else {newIndex++;}
-        }
-        return newIndex;
-    }
+    @Override protected String getChoiceTypeString() {return "Species";}
 }

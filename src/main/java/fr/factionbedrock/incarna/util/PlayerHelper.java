@@ -1,18 +1,34 @@
 package fr.factionbedrock.incarna.util;
 
+import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.choice.IncarnaSpecie;
 import fr.factionbedrock.incarna.choice.IncarnaTeam;
+import fr.factionbedrock.incarna.power.AttributeModifierPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.registry.IncarnaSpecies;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
+import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerHelper
 {
+    public static void updatePlayerChoice(PlayerEntity player, TrackedData<String> choiceTrackedData, IncarnaChoice previousChoice, IncarnaChoice newChoice)
+    {
+        player.getDataTracker().set(choiceTrackedData, newChoice.name());
+        if (player instanceof ServerPlayerEntity serverPlayer) {PlayerHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousChoice, newChoice);}
+    }
+
+    public static void onPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousChoice, IncarnaChoice newChoice)
+    {
+        IncarnaHelper.runFunction(player, newChoice.name());
+        removeModifiersOnPlayerChangeTeamOrSpecies(player, previousChoice);
+    }
+
     public static List<IncarnaPower> getAllPowersFrom(PlayerEntity player)
     {
         IncarnaTeam playerTeam = IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));
@@ -24,12 +40,34 @@ public class PlayerHelper
         return powerList;
     }
 
+    public static void removeModifiersOnPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousChoice)
+    {
+        for (IncarnaPower power : previousChoice.powers())
+        {
+            if (power instanceof AttributeModifierPower modifierPower)
+            {
+                modifierPower.removePlayerAttributeModifier(player);
+            }
+        }
+    }
+
     public static void resetPlayerChoices(PlayerEntity player)
     {
         resetPlayerTeam(player);
         resetPlayerSpecies(player);
     }
 
-    public static void resetPlayerTeam(PlayerEntity player) {player.getDataTracker().set(IncarnaTrackedData.TEAM, IncarnaTeams.DEFAULT.name());}
-    public static void resetPlayerSpecies(PlayerEntity player) {player.getDataTracker().set(IncarnaTrackedData.SPECIES, IncarnaSpecies.DEFAULT.name());}
+    public static void resetPlayerTeam(PlayerEntity player)
+    {
+        IncarnaTeam previousTeam = IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));
+        player.getDataTracker().set(IncarnaTrackedData.TEAM, IncarnaTeams.DEFAULT.name());
+        if (player instanceof ServerPlayerEntity serverPlayer) {PlayerHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousTeam, IncarnaTeams.DEFAULT);}
+    }
+
+    public static void resetPlayerSpecies(PlayerEntity player)
+    {
+        IncarnaSpecie previousSpecies = IncarnaSpecies.SPECIES_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.SPECIES));
+        player.getDataTracker().set(IncarnaTrackedData.SPECIES, IncarnaSpecies.DEFAULT.name());
+        if (player instanceof ServerPlayerEntity serverPlayer) {PlayerHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousSpecies, IncarnaSpecies.DEFAULT);}
+    }
 }
