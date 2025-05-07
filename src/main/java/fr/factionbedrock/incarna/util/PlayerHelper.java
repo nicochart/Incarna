@@ -3,7 +3,6 @@ package fr.factionbedrock.incarna.util;
 import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.choice.IncarnaSpecie;
 import fr.factionbedrock.incarna.choice.IncarnaTeam;
-import fr.factionbedrock.incarna.power.AttributeModifierPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.registry.IncarnaSpecies;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
@@ -44,10 +43,7 @@ public class PlayerHelper
     {
         for (IncarnaPower power : previousChoice.powers())
         {
-            if (power instanceof AttributeModifierPower modifierPower)
-            {
-                modifierPower.removePlayerAttributeModifier(player);
-            }
+            power.onRemovedFromPlayer(player);
         }
     }
 

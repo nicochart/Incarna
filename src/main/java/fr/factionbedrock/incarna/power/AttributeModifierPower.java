@@ -5,6 +5,7 @@ import fr.factionbedrock.incarna.util.ModifierInfo;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -33,6 +34,11 @@ public class AttributeModifierPower extends IncarnaPower
         this.baseValue = baseValue;
         this.modifierValue = modifierValue;
         this.modifierOperation = modifierOperation;
+    }
+
+    @Override public void onRemovedFromPlayer(PlayerEntity player)
+    {
+        if (player instanceof ServerPlayerEntity serverPlayer) {removePlayerAttributeModifier(serverPlayer);}
     }
 
     public void updatePlayerAttributeModifier(ServerPlayerEntity player, int powerLevel)

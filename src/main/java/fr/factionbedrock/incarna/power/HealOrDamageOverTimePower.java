@@ -1,6 +1,7 @@
 package fr.factionbedrock.incarna.power;
 
 import fr.factionbedrock.incarna.util.ModifierInfo;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.function.Function;
@@ -18,6 +19,8 @@ public class HealOrDamageOverTimePower extends IncarnaTickablePower
         this.amountModifier = amountModifier;
         this.condition = condition;
     }
+
+    @Override public void onRemovedFromPlayer(PlayerEntity player) {}
 
     @Override protected void tick(ServerPlayerEntity player, int powerLevel)
     {

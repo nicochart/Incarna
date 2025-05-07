@@ -3,6 +3,7 @@ package fr.factionbedrock.incarna.power;
 import fr.factionbedrock.incarna.util.ModifierInfo;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.RegistryKey;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +25,8 @@ public class DamageSufferedModifierPower extends IncarnaPower
         this.modifierValue = modifierValue;
         this.modifierOperation = modifierOperation;
     }
+
+    @Override public void onRemovedFromPlayer(PlayerEntity player) {}
 
     public float updateDamageModifier(DamageSource source, float previousAmount, int powerLevel)
     {

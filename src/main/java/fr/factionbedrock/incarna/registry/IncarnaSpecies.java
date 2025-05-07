@@ -10,7 +10,7 @@ public class IncarnaSpecies
     public static LinkedHashMap<Integer, IncarnaSpecie> SPECIES_INDEXES = new LinkedHashMap<Integer, IncarnaSpecie>();
     public static LinkedHashMap<String, IncarnaSpecie> SPECIES_NAMES = new LinkedHashMap<String, IncarnaSpecie>();
     public static IncarnaSpecie DEFAULT = new  IncarnaSpecie(0, "default");
-    public static IncarnaSpecie ELF = new  IncarnaSpecie(1, "elf", IncarnaPowers.CONSTANT_SPEED_MODIFIER, IncarnaPowers.CONSTANT_JUMP_STRENGTH_MODIFIER, IncarnaPowers.VEGAN);
+    public static IncarnaSpecie ELF = new  IncarnaSpecie(1, "elf", IncarnaPowers.CONSTANT_SPEED_MODIFIER, IncarnaPowers.CONSTANT_SPEED_EFFECT, IncarnaPowers.CONSTANT_JUMP_STRENGTH_MODIFIER, IncarnaPowers.VEGAN);
     public static IncarnaSpecie DRAGON_BORN = new  IncarnaSpecie(2, "dragon_born", IncarnaPowers.CARNIVORE, IncarnaPowers.CONSTANT_ARMOR_MODIFIER);
     public static IncarnaSpecie TIDE_BORN = new  IncarnaSpecie(3, "tide_born", IncarnaPowers.HEAL_IN_WATER, IncarnaPowers.CONSTANT_SPEED_MODIFIER);
     public static IncarnaSpecie FALLEN_ANGEL = new  IncarnaSpecie(4, "fallen_angel", IncarnaPowers.CONSTANT_SPEED_MODIFIER);

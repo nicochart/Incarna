@@ -1,6 +1,8 @@
 package fr.factionbedrock.incarna.power;
 
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.function.Function;
 
@@ -14,6 +16,8 @@ public class CancelDamageSufferedPower extends IncarnaPower
         super();
         this.shouldCancel = shouldCancel;
     }
+
+    @Override public void onRemovedFromPlayer(PlayerEntity player) {}
 
     public boolean shouldCancel(DamageSource source) {return shouldCancel.apply(source);}
 }
