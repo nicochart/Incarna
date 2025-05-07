@@ -1,9 +1,15 @@
 package fr.factionbedrock.incarna.block;
 
+import com.mojang.serialization.MapCodec;
+import fr.factionbedrock.incarna.blockentity.ChoiceBlockEntity;
 import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.util.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,10 +24,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 
-public abstract class ChoiceBlock extends Block
+public abstract class ChoiceBlock extends BlockWithEntity
 {
     public static final BooleanProperty IS_LOCKED = BooleanProperty.of("is_locked");
 
@@ -30,6 +37,9 @@ public abstract class ChoiceBlock extends Block
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(IS_LOCKED, false));
     }
+
+    @Override protected abstract MapCodec<? extends ChoiceBlock> getCodec();
+    @Override public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {return new ChoiceBlockEntity(pos, state);}
 
     @Override protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {builder.add(IS_LOCKED);}
 

@@ -1,6 +1,8 @@
 package fr.factionbedrock.incarna;
 
+import fr.factionbedrock.incarna.client.IncarnaClient;
 import fr.factionbedrock.incarna.event.PlayerEvents;
+import fr.factionbedrock.incarna.registry.IncarnaBlockEntities;
 import fr.factionbedrock.incarna.registry.IncarnaBlocks;
 import fr.factionbedrock.incarna.registry.IncarnaItems;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
@@ -21,13 +23,14 @@ public class Incarna implements ModInitializer, ClientModInitializer
 	{
 		IncarnaBlocks.load();
 		IncarnaItems.load();
+		IncarnaBlockEntities.load();
 		IncarnaTrackedData.load();
 		PlayerEvents.registerUseItemCallback();
 	}
 
 	@Override public void onInitializeClient()
 	{
-
+		IncarnaClient.registerBlockEntityRenderers();
 	}
 
 	public static Identifier id(String path) {return Identifier.of(MOD_ID, path);}

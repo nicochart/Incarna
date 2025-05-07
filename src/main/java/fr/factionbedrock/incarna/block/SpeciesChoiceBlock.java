@@ -1,5 +1,6 @@
 package fr.factionbedrock.incarna.block;
 
+import com.mojang.serialization.MapCodec;
 import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.choice.IncarnaSpecie;
 import fr.factionbedrock.incarna.registry.IncarnaSpecies;
@@ -14,6 +15,7 @@ import java.util.LinkedHashMap;
 
 public class SpeciesChoiceBlock extends ChoiceBlock
 {
+    public static final MapCodec<SpeciesChoiceBlock> CODEC = createCodec(SpeciesChoiceBlock::new);
     public static final IntProperty SPECIES_INDEX = IntProperty.of("species_index", 0, IncarnaSpecies.MAX_INDEX);
 
     public SpeciesChoiceBlock(Settings settings)
@@ -21,6 +23,8 @@ public class SpeciesChoiceBlock extends ChoiceBlock
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(SPECIES_INDEX, 0));
     }
+
+    @Override protected MapCodec<? extends ChoiceBlock> getCodec() {return CODEC;}
 
     @Override protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {super.appendProperties(builder); builder.add(SPECIES_INDEX);}
 

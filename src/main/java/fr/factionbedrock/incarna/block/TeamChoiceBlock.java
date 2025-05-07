@@ -1,5 +1,6 @@
 package fr.factionbedrock.incarna.block;
 
+import com.mojang.serialization.MapCodec;
 import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.choice.IncarnaTeam;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
@@ -18,6 +19,7 @@ import java.util.LinkedHashMap;
 
 public class TeamChoiceBlock extends ChoiceBlock
 {
+    public static final MapCodec<TeamChoiceBlock> CODEC = createCodec(TeamChoiceBlock::new);
     public static final IntProperty TEAM_INDEX = IntProperty.of("team_index", 0, IncarnaTeams.MAX_INDEX);
 
     public TeamChoiceBlock(Settings settings)
@@ -25,6 +27,8 @@ public class TeamChoiceBlock extends ChoiceBlock
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(TEAM_INDEX, 0));
     }
+
+    @Override protected MapCodec<? extends ChoiceBlock> getCodec() {return CODEC;}
 
     @Override protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {super.appendProperties(builder); builder.add(TEAM_INDEX);}
 
