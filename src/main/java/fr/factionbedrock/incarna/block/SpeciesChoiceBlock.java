@@ -21,7 +21,7 @@ public class SpeciesChoiceBlock extends ChoiceBlock
     public SpeciesChoiceBlock(Settings settings)
     {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(SPECIES_INDEX, 0));
+        this.setDefaultState(this.getDefaultState().with(SPECIES_INDEX, 0));
     }
 
     @Override protected MapCodec<? extends ChoiceBlock> getCodec() {return CODEC;}

@@ -25,7 +25,7 @@ public class TeamChoiceBlock extends ChoiceBlock
     public TeamChoiceBlock(Settings settings)
     {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(TEAM_INDEX, 0));
+        this.setDefaultState(this.getDefaultState().with(TEAM_INDEX, 0));
     }
 
     @Override protected MapCodec<? extends ChoiceBlock> getCodec() {return CODEC;}

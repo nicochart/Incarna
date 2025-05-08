@@ -11,8 +11,8 @@ import net.minecraft.registry.Registry;
 
 public class IncarnaBlocks
 {
-    public static final TeamChoiceBlock TEAM_CHOICE_BLOCK = register("team_choice_block", new TeamChoiceBlock(AbstractBlock.Settings.copy(Blocks.BEDROCK)));
-    public static final SpeciesChoiceBlock SPECIES_CHOICE_BLOCK = register("species_choice_block", new SpeciesChoiceBlock(AbstractBlock.Settings.copy(Blocks.BEDROCK)));
+    public static final TeamChoiceBlock TEAM_CHOICE_BLOCK = register("team_choice_block", new TeamChoiceBlock(AbstractBlock.Settings.copy(Blocks.BEDROCK).nonOpaque().luminance((state) -> 10)));
+    public static final SpeciesChoiceBlock SPECIES_CHOICE_BLOCK = register("species_choice_block", new SpeciesChoiceBlock(AbstractBlock.Settings.copy(Blocks.BEDROCK).nonOpaque().luminance((state) -> 10)));
 
     public static <T extends Block> T register(String name, T block) {return Registry.register(Registries.BLOCK, Incarna.id(name), block);}
 

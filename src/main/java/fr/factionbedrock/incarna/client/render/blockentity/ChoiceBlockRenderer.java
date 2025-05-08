@@ -2,6 +2,7 @@ package fr.factionbedrock.incarna.client.render.blockentity;
 
 import fr.factionbedrock.incarna.Incarna;
 import fr.factionbedrock.incarna.blockentity.ChoiceBlockEntity;
+import fr.factionbedrock.incarna.registry.IncarnaBlocks;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
@@ -13,19 +14,21 @@ import org.joml.Matrix4f;
 
 import static net.minecraft.client.render.RenderPhase.*;
 
-public class EndGatewayInspiredRenderer<T extends ChoiceBlockEntity> implements BlockEntityRenderer<T>
+public class ChoiceBlockRenderer<T extends ChoiceBlockEntity> implements BlockEntityRenderer<T>
 {
-    public static final Identifier CHOICE_BLOCK_OUTER = Incarna.id("textures/block/team_choice_block.png");
+    public static final Identifier TEAM_CHOICE_BLOCK_OUTER = Incarna.id("textures/block/team_choice_block.png");
+    public static final Identifier SPECIES_CHOICE_BLOCK_OUTER = Incarna.id("textures/block/species_choice_block.png");
     public static final Identifier CHOICE_BLOCK_INNER_BACKGROUND = Incarna.id("textures/entity/choice_block_background.png");
     public static final Identifier CHOICE_BLOCK_INNER = Incarna.id("textures/entity/choice_block.png");
 
-    public EndGatewayInspiredRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public ChoiceBlockRenderer(BlockEntityRendererFactory.Context ctx) {}
 
-    public void render(T blockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j)
+    @Override public void render(T blockEntity, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay)
     {
+        Identifier outerTexture = blockEntity.getCachedState().isOf(IncarnaBlocks.TEAM_CHOICE_BLOCK) ? TEAM_CHOICE_BLOCK_OUTER : SPECIES_CHOICE_BLOCK_OUTER;
         Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
         this.renderInnerSides(matrix4f, vertexConsumerProvider.getBuffer(getInnerLayer()));
-        this.renderOuterSides(matrix4f, vertexConsumerProvider.getBuffer(getOuterLayer()));
+        this.renderOuterSides(matrix4f, vertexConsumerProvider.getBuffer(getOuterLayer(outerTexture)));
     }
 
     private void renderOuterSides(Matrix4f matrix, VertexConsumer vertexConsumer)
@@ -48,12 +51,12 @@ public class EndGatewayInspiredRenderer<T extends ChoiceBlockEntity> implements 
 
     private void renderInnerSides(Matrix4f matrix, VertexConsumer vertexConsumer)
     {
-        this.renderInnerSide(matrix, vertexConsumer, 0.15F, 0.85F, 0.15F, 0.85F, 0.85F, 0.85F, 0.85F, 0.85F, Direction.SOUTH);
-        this.renderInnerSide(matrix, vertexConsumer, 0.15F, 0.85F, 0.85F, 0.15F, 0.15F, 0.15F, 0.15F, 0.15F, Direction.NORTH);
-        this.renderInnerSide(matrix, vertexConsumer, 0.85F, 0.85F, 0.85F, 0.15F, 0.15F, 0.85F, 0.85F, 0.15F, Direction.EAST);
-        this.renderInnerSide(matrix, vertexConsumer, 0.15F, 0.15F, 0.15F, 0.85F, 0.15F, 0.85F, 0.85F, 0.15F, Direction.WEST);
-        this.renderInnerSide(matrix, vertexConsumer, 0.15F, 0.85F, 0.15F, 0.15F, 0.15F, 0.15F, 0.85F, 0.85F, Direction.DOWN);
-        this.renderInnerSide(matrix, vertexConsumer, 0.15F, 0.85F, 0.85F, 0.85F, 0.85F, 0.85F, 0.15F, 0.15F, Direction.UP);
+        this.renderInnerSide(matrix, vertexConsumer, 0.02F, 0.98F, 0.02F, 0.98F, 0.98F, 0.98F, 0.98F, 0.98F, Direction.SOUTH);
+        this.renderInnerSide(matrix, vertexConsumer, 0.02F, 0.98F, 0.98F, 0.02F, 0.02F, 0.02F, 0.02F, 0.02F, Direction.NORTH);
+        this.renderInnerSide(matrix, vertexConsumer, 0.98F, 0.98F, 0.98F, 0.02F, 0.02F, 0.98F, 0.98F, 0.02F, Direction.EAST);
+        this.renderInnerSide(matrix, vertexConsumer, 0.02F, 0.02F, 0.02F, 0.98F, 0.02F, 0.98F, 0.98F, 0.02F, Direction.WEST);
+        this.renderInnerSide(matrix, vertexConsumer, 0.02F, 0.98F, 0.02F, 0.02F, 0.02F, 0.02F, 0.98F, 0.98F, Direction.DOWN);
+        this.renderInnerSide(matrix, vertexConsumer, 0.02F, 0.98F, 0.98F, 0.98F, 0.98F, 0.98F, 0.02F, 0.02F, Direction.UP);
     }
 
     private void renderInnerSide(Matrix4f model, VertexConsumer vertices, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, Direction side)
@@ -64,9 +67,8 @@ public class EndGatewayInspiredRenderer<T extends ChoiceBlockEntity> implements 
         vertices.vertex(model, x1, y2, z4);
     }
 
-
-    public static final RenderPhase.Texture CHOICE_BLOCK_OUTER_LAYER_RENDER_PHASE = new RenderPhase.Texture(CHOICE_BLOCK_OUTER, false, false);
-    protected static RenderLayer getOuterLayer()
+    //inspired of CUTOUT RenderLayer
+    protected static RenderLayer getOuterLayer(Identifier textureIdentifier)
     {
         return RenderLayer.of(
                 "choice_block_outer_layer",
@@ -75,10 +77,16 @@ public class EndGatewayInspiredRenderer<T extends ChoiceBlockEntity> implements 
                 786432,
                 true,
                 false,
-                RenderLayer.MultiPhaseParameters.builder().lightmap(ENABLE_LIGHTMAP).program(CUTOUT_PROGRAM).texture(CHOICE_BLOCK_OUTER_LAYER_RENDER_PHASE).build(true)
+                RenderLayer.MultiPhaseParameters.builder().lightmap(ENABLE_LIGHTMAP).program(CUTOUT_PROGRAM).texture(getOuterLayerRenderPhaseTexture(textureIdentifier)).build(true)
         );
     }
 
+    public static RenderPhase.Texture getOuterLayerRenderPhaseTexture(Identifier textureIdentifier)
+    {
+        return new RenderPhase.Texture(textureIdentifier, false, false);
+    }
+
+    //inspired of RenderLayer.END_GATEWAY
     protected static RenderLayer getInnerLayer()
     {
         return RenderLayer.of(
