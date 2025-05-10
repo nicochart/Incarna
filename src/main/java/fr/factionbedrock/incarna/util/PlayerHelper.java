@@ -24,7 +24,8 @@ public class PlayerHelper
 
     public static void onPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousChoice, IncarnaChoice newChoice)
     {
-        IncarnaHelper.runFunction(player, newChoice.name());
+        String folder = newChoice instanceof IncarnaTeam ? "team/" : "species/";
+        IncarnaHelper.runFunction(player, folder + newChoice.name());
         removeModifiersOnPlayerChangeTeamOrSpecies(player, previousChoice);
     }
 
