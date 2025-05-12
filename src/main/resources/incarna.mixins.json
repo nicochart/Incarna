@@ -7,6 +7,8 @@
 		"PlayerNbtMixin",
 		"PlayerTickMixin",
 		"PlayerDeathMixin",
+		"MilkBucketFinishUsingMixin",
+		"ClearStatusEffectsMixin",
 		"LivingEntityDamageMixin"
 	],
 	"injectors": {

@@ -2,10 +2,7 @@ package fr.factionbedrock.incarna;
 
 import fr.factionbedrock.incarna.client.IncarnaClient;
 import fr.factionbedrock.incarna.event.PlayerEvents;
-import fr.factionbedrock.incarna.registry.IncarnaBlockEntities;
-import fr.factionbedrock.incarna.registry.IncarnaBlocks;
-import fr.factionbedrock.incarna.registry.IncarnaItems;
-import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
+import fr.factionbedrock.incarna.registry.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 
@@ -24,6 +21,7 @@ public class Incarna implements ModInitializer, ClientModInitializer
 		IncarnaBlocks.load();
 		IncarnaItems.load();
 		IncarnaBlockEntities.load();
+		IncarnaMobEffects.load();
 		IncarnaTrackedData.load();
 		PlayerEvents.registerUseItemCallback();
 	}
