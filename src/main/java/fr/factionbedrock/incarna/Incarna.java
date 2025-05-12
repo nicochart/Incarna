@@ -1,7 +1,10 @@
 package fr.factionbedrock.incarna;
 
 import fr.factionbedrock.incarna.client.IncarnaClient;
+import fr.factionbedrock.incarna.client.packet.IncarnaClientNetworking;
+import fr.factionbedrock.incarna.client.registry.IncarnaKeyBinds;
 import fr.factionbedrock.incarna.event.PlayerEvents;
+import fr.factionbedrock.incarna.packet.IncarnaNetworking;
 import fr.factionbedrock.incarna.registry.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -24,11 +27,15 @@ public class Incarna implements ModInitializer, ClientModInitializer
 		IncarnaMobEffects.load();
 		IncarnaTrackedData.load();
 		PlayerEvents.registerUseItemCallback();
+		IncarnaNetworking.registerData();
+		IncarnaNetworking.registerServerReceiver();
 	}
 
 	@Override public void onInitializeClient()
 	{
 		IncarnaClient.registerBlockEntityRenderers();
+		IncarnaKeyBinds.registerKeybindsAndPressedInteractions();
+		IncarnaClientNetworking.registerClientReceiver();
 	}
 
 	public static Identifier id(String path) {return Identifier.of(MOD_ID, path);}

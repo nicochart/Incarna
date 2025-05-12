@@ -4,10 +4,12 @@ import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.choice.IncarnaSpecie;
 import fr.factionbedrock.incarna.choice.IncarnaTeam;
 import fr.factionbedrock.incarna.power.IncarnaPower;
+import fr.factionbedrock.incarna.registry.IncarnaMobEffects;
 import fr.factionbedrock.incarna.registry.IncarnaSpecies;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
 import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -30,6 +32,13 @@ public class PlayerHelper
         String folder = newChoice instanceof IncarnaTeam ? "team/" : "species/";
         IncarnaHelper.runFunction(player, folder + newChoice.name());
         removeModifiersOnPlayerChangeTeamOrSpecies(player, previousChoice);
+    }
+
+    public static boolean canUseAbility(PlayerEntity player) {return !player.hasStatusEffect(IncarnaMobEffects.ABILITY_COOLDOWN);}
+
+    public static void onPlayerUseAbility(ServerPlayerEntity player)
+    {
+        player.addStatusEffect(new StatusEffectInstance(IncarnaMobEffects.ABILITY_COOLDOWN, 600));
     }
 
     public static List<IncarnaPower> getAllPowersFrom(PlayerEntity player)
