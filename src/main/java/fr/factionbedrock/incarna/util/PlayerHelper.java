@@ -16,6 +16,9 @@ import java.util.List;
 
 public class PlayerHelper
 {
+    public static IncarnaTeam getPlayerTeam(PlayerEntity player) {return IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));}
+    public static IncarnaSpecie getPlayerSpecies(PlayerEntity player) {return IncarnaSpecies.SPECIES_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.SPECIES));}
+
     public static void updatePlayerChoice(PlayerEntity player, TrackedData<String> choiceTrackedData, IncarnaChoice previousChoice, IncarnaChoice newChoice)
     {
         player.getDataTracker().set(choiceTrackedData, newChoice.name());
@@ -31,8 +34,8 @@ public class PlayerHelper
 
     public static List<IncarnaPower> getAllPowersFrom(PlayerEntity player)
     {
-        IncarnaTeam playerTeam = IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));
-        IncarnaSpecie playerSpecies = IncarnaSpecies.SPECIES_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.SPECIES));
+        IncarnaTeam playerTeam = getPlayerTeam(player);
+        IncarnaSpecie playerSpecies = getPlayerSpecies(player);
 
         List<IncarnaPower> powerList = new ArrayList<>();
         powerList.addAll(playerTeam.powers());

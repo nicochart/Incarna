@@ -49,7 +49,7 @@ public abstract class ChoiceBlock extends BlockWithEntity
         {
             IncarnaChoice blockChoice = this.getIndexesToChoiceList().get(this.getChoiceIndex(state));
             IncarnaChoice previousPlayerChoice = this.getNamesToChoiceList().get(player.getDataTracker().get(this.getTrackedData()));
-            if (previousPlayerChoice == getDefaultChoice() && blockChoice != getDefaultChoice())
+            if (previousPlayerChoice == getDefaultChoice() && blockChoice != getDefaultChoice() && this.canPlayerChooseChoice(player, blockChoice))
             {
                 this.updatePlayerChoice(world, pos, player, previousPlayerChoice, blockChoice);
             }
@@ -103,6 +103,8 @@ public abstract class ChoiceBlock extends BlockWithEntity
     protected abstract LinkedHashMap<String, ? extends IncarnaChoice> getNamesToChoiceList();
     protected abstract TrackedData<String> getTrackedData();
     protected abstract IncarnaChoice getDefaultChoice();
+
+    protected abstract boolean canPlayerChooseChoice(PlayerEntity player, IncarnaChoice choice);
 
     protected abstract String getChoiceTypeString();
 

@@ -51,5 +51,7 @@ public class TeamChoiceBlock extends ChoiceBlock
     @Override protected TrackedData<String> getTrackedData() {return IncarnaTrackedData.TEAM;}
     @Override protected IncarnaChoice getDefaultChoice() {return IncarnaTeams.DEFAULT;}
 
+    @Override protected boolean canPlayerChooseChoice(PlayerEntity player, IncarnaChoice choice) {return true;}
+
     @Override protected String getChoiceTypeString() {return "Team";}
 }

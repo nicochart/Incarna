@@ -5,9 +5,11 @@ import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.choice.IncarnaSpecie;
 import fr.factionbedrock.incarna.registry.IncarnaSpecies;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
+import fr.factionbedrock.incarna.util.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 
@@ -35,6 +37,8 @@ public class SpeciesChoiceBlock extends ChoiceBlock
     @Override protected LinkedHashMap<String, IncarnaSpecie> getNamesToChoiceList() {return IncarnaSpecies.SPECIES_NAMES;}
     @Override protected TrackedData<String> getTrackedData() {return IncarnaTrackedData.SPECIES;}
     @Override protected IncarnaChoice getDefaultChoice() {return IncarnaSpecies.DEFAULT;}
+
+    @Override protected boolean canPlayerChooseChoice(PlayerEntity player, IncarnaChoice choice) {return choice instanceof IncarnaSpecie species && PlayerHelper.getPlayerTeam(player).allowsSpecies(species);}
 
     @Override protected String getChoiceTypeString() {return "Species";}
 }
