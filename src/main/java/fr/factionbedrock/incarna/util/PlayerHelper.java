@@ -3,7 +3,10 @@ package fr.factionbedrock.incarna.util;
 import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.choice.IncarnaSpecie;
 import fr.factionbedrock.incarna.choice.IncarnaTeam;
+import fr.factionbedrock.incarna.power.AbilityPower;
+import fr.factionbedrock.incarna.power.AttributeModifierPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
+import fr.factionbedrock.incarna.power.IncarnaTickablePower;
 import fr.factionbedrock.incarna.registry.IncarnaMobEffects;
 import fr.factionbedrock.incarna.registry.IncarnaSpecies;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
@@ -38,6 +41,13 @@ public class PlayerHelper
 
     public static void onPlayerUseAbility(ServerPlayerEntity player)
     {
+        for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
+        {
+            if (power instanceof AbilityPower abilityPower)
+            {
+                abilityPower.tryTick(player, 1);
+            }
+        }
         player.addStatusEffect(new StatusEffectInstance(IncarnaMobEffects.ABILITY_COOLDOWN, 600));
     }
 
