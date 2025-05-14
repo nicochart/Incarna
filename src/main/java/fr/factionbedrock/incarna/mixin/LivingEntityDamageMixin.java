@@ -45,7 +45,7 @@ public class LivingEntityDamageMixin
         {
             for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
             {
-                if (power instanceof CancelDamageSufferedPower cancelDamagePower && cancelDamagePower.shouldCancel(damageSource))
+                if (power instanceof CancelDamageSufferedPower cancelDamagePower && cancelDamagePower.shouldCancel(new CancelDamageSufferedPower.Info(damageSource, amount)))
                 {
                     cir.setReturnValue(false);
                 }
