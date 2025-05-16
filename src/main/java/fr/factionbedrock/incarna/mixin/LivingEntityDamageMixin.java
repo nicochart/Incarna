@@ -1,5 +1,6 @@
 package fr.factionbedrock.incarna.mixin;
 
+import fr.factionbedrock.incarna.power.ActionOnDamagePower;
 import fr.factionbedrock.incarna.power.CancelDamageSufferedPower;
 import fr.factionbedrock.incarna.power.DamageSufferedModifierPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
@@ -45,9 +46,14 @@ public class LivingEntityDamageMixin
         {
             for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
             {
-                if (power instanceof CancelDamageSufferedPower cancelDamagePower && cancelDamagePower.shouldCancel(new CancelDamageSufferedPower.Info(damageSource, amount)))
+                if (power instanceof CancelDamageSufferedPower cancelDamagePower)
                 {
-                    cir.setReturnValue(false);
+                    CancelDamageSufferedPower.Info info = new CancelDamageSufferedPower.Info(damageSource, amount);
+                    if (power instanceof ActionOnDamagePower actionOnDamagePower)
+                    {
+                        actionOnDamagePower.tryTick(player, info);
+                    }
+                    if (cancelDamagePower.shouldCancel(info)) {cir.setReturnValue(false);}
                 }
             }
         }
