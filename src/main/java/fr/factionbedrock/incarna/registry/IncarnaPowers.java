@@ -6,7 +6,11 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.entity.projectile.thrown.PotionEntity;
+import net.minecraft.entity.projectile.thrown.ThrownEntity;
 import net.minecraft.item.Items;
 
 public class IncarnaPowers
@@ -31,5 +35,5 @@ public class IncarnaPowers
     public static IncarnaPower SLOW_FALLING_ABILITY = new StatusEffectAbilityPower((level) -> new StatusEffectInstance(StatusEffects.SLOW_FALLING, 300, Math.max(0, level - 1)));
     public static IncarnaPower SPEED_ABILITY = new StatusEffectAbilityPower((level) -> new StatusEffectInstance(StatusEffects.SPEED, 300, Math.max(0, level - 1)));
     public static IncarnaPower THROW_ENDERPEARL_ABILITY = new ThrowEnderPearlAbilityPower();
-    public static IncarnaPower TELEPORT_ON_PROJECTILE_DAMAGE = new TeleportOnDamagePower(damageInfo -> {return damageInfo.damageSource().getSource() instanceof ProjectileEntity;});
+    public static IncarnaPower TELEPORT_ON_PROJECTILE_DAMAGE = new TeleportOnProjectileHitOrDeflectPower(projectile -> {return projectile instanceof PersistentProjectileEntity || projectile instanceof ThrownEntity && !(projectile instanceof PotionEntity);});
 }

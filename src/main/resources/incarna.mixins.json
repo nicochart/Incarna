@@ -9,6 +9,7 @@
 		"PlayerDeathMixin",
 		"MilkBucketFinishUsingMixin",
 		"ClearStatusEffectsMixin",
+		"ProjectileEntityHitOrDeflectMixin",
 		"LivingEntityDamageMixin"
 	],
 	"injectors": {

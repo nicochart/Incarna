@@ -1,6 +1,7 @@
 package fr.factionbedrock.incarna.power;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -12,9 +13,12 @@ import net.minecraft.world.event.GameEvent;
 
 import java.util.function.Function;
 
-public class TeleportOnDamagePower extends ActionOnDamagePower
+public class TeleportOnProjectileHitOrDeflectPower extends ActionOnProjectileHitPower
 {
-    public TeleportOnDamagePower(Function<CancelDamageSufferedPower.Info, Boolean> shouldAction) {super(shouldAction);}
+    public TeleportOnProjectileHitOrDeflectPower(Function<ProjectileEntity, Boolean> shouldActionAndCancelHitOrDeflect)
+    {
+        super(shouldActionAndCancelHitOrDeflect);
+    }
 
     @Override protected void tick(PlayerEntity player)
     {
