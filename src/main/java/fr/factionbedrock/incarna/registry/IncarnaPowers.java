@@ -6,12 +6,12 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.thrown.PotionEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
 import net.minecraft.item.Items;
+import net.minecraft.world.dimension.DimensionTypes;
 
 public class IncarnaPowers
 {
@@ -31,6 +31,7 @@ public class IncarnaPowers
     public static IncarnaPower CANCEL_LOW_FALL_DAMAGE = new CancelDamageSufferedPower((damageInfo -> {return damageInfo.damageSource().isOf(DamageTypes.FALL) && damageInfo.amount() < 6.0F;}));
     public static IncarnaPower HEAL_IN_WATER = new HealOrDamageOverTimePower(1.0F, (modifierInfo) -> {return modifierInfo.level() * (float)modifierInfo.baseModifierValue();}, (player) -> {return player.isTouchingWater();});
     public static IncarnaPower DAMAGE_IN_WATER = new HealOrDamageOverTimePower(-1.0F, (modifierInfo) -> {return modifierInfo.level() * (float)modifierInfo.baseModifierValue();}, (player) -> {return player.isTouchingWater();});
+    public static IncarnaPower DAMAGE_IN_NETHER = new HealOrDamageOverTimePower(-1.0F, (modifierInfo) -> {return modifierInfo.level() * (float)modifierInfo.baseModifierValue();}, (player) -> {return player.getWorld().getDimensionEntry().matchesKey(DimensionTypes.THE_NETHER);});
     public static IncarnaPower FIRE_RESISTANCE_ABILITY = new StatusEffectAbilityPower((level) -> new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 300, 0));
     public static IncarnaPower SLOW_FALLING_ABILITY = new StatusEffectAbilityPower((level) -> new StatusEffectInstance(StatusEffects.SLOW_FALLING, 300, Math.max(0, level - 1)));
     public static IncarnaPower SPEED_ABILITY = new StatusEffectAbilityPower((level) -> new StatusEffectInstance(StatusEffects.SPEED, 300, Math.max(0, level - 1)));
