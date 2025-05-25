@@ -19,20 +19,35 @@ import java.util.List;
 
 public class PlayerHelper
 {
+    public static int MIN_INCARNA_EXPERIENCE = 0;
+    public static int MAX_INCARNA_EXPERIENCE = 10713600; //124 days in seconds
+    public static int getPlayerIncarnaExperience(PlayerEntity player) {return player.getDataTracker().get(IncarnaTrackedData.INCARNA_EXPERIENCE);}
     public static IncarnaTeam getPlayerTeam(PlayerEntity player) {return IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));}
     public static IncarnaSpecie getPlayerSpecies(PlayerEntity player) {return IncarnaSpecies.SPECIES_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.SPECIES));}
+
+    public static boolean arePlayersInSameTeam(PlayerEntity player1, PlayerEntity player2) {return getPlayerTeam(player1) == getPlayerTeam(player2);}
+
+    public static void deltaPlayerIncarnaExperience(PlayerEntity player, ExperienceDeltaReason reason)
+    {
+        int previousExperience = getPlayerIncarnaExperience(player);
+        player.getDataTracker().set(IncarnaTrackedData.INCARNA_EXPERIENCE, Math.clamp(previousExperience + reason.delta(), MIN_INCARNA_EXPERIENCE, MAX_INCARNA_EXPERIENCE));
+    }
 
     public static void updatePlayerChoice(PlayerEntity player, TrackedData<String> choiceTrackedData, IncarnaChoice previousChoice, IncarnaChoice newChoice)
     {
         player.getDataTracker().set(choiceTrackedData, newChoice.name());
-        if (player instanceof ServerPlayerEntity serverPlayer) {PlayerHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousChoice, newChoice);}
+        PlayerHelper.onPlayerChangeTeamOrSpecies(player, previousChoice, newChoice);
     }
 
-    public static void onPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousChoice, IncarnaChoice newChoice)
+    public static void onPlayerChangeTeamOrSpecies(PlayerEntity player, IncarnaChoice previousChoice, IncarnaChoice newChoice)
     {
         String folder = newChoice instanceof IncarnaTeam ? "team/" : "species/";
-        IncarnaHelper.runFunction(player, folder + newChoice.name());
-        removeModifiersOnPlayerChangeTeamOrSpecies(player, previousChoice);
+        if (player instanceof ServerPlayerEntity serverPlayer)
+        {
+            IncarnaHelper.runFunction(serverPlayer, folder + newChoice.name());
+            removeModifiersOnPlayerChangeTeamOrSpecies(serverPlayer, previousChoice);
+        }
+        resetPlayerIncarnaExperience(player);
     }
 
     public static boolean canUseAbility(PlayerEntity player) {return !player.hasStatusEffect(IncarnaMobEffects.ABILITY_COOLDOWN) && getPlayerSpecies(player).hasAbility();}
@@ -70,6 +85,11 @@ public class PlayerHelper
         }
     }
 
+    public static void resetPlayerIncarnaExperience(PlayerEntity player)
+    {
+        player.getDataTracker().set(IncarnaTrackedData.INCARNA_EXPERIENCE, 0);
+    }
+
     public static void resetPlayerChoices(PlayerEntity player)
     {
         resetPlayerTeam(player);
@@ -80,13 +100,13 @@ public class PlayerHelper
     {
         IncarnaTeam previousTeam = IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));
         player.getDataTracker().set(IncarnaTrackedData.TEAM, IncarnaTeams.DEFAULT.name());
-        if (player instanceof ServerPlayerEntity serverPlayer) {PlayerHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousTeam, IncarnaTeams.DEFAULT);}
+        PlayerHelper.onPlayerChangeTeamOrSpecies(player, previousTeam, IncarnaTeams.DEFAULT);
     }
 
     public static void resetPlayerSpecies(PlayerEntity player)
     {
         IncarnaSpecie previousSpecies = IncarnaSpecies.SPECIES_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.SPECIES));
         player.getDataTracker().set(IncarnaTrackedData.SPECIES, IncarnaSpecies.DEFAULT.name());
-        if (player instanceof ServerPlayerEntity serverPlayer) {PlayerHelper.onPlayerChangeTeamOrSpecies(serverPlayer, previousSpecies, IncarnaSpecies.DEFAULT);}
+        PlayerHelper.onPlayerChangeTeamOrSpecies(player, previousSpecies, IncarnaSpecies.DEFAULT);
     }
 }

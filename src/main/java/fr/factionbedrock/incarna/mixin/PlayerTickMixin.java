@@ -3,6 +3,7 @@ package fr.factionbedrock.incarna.mixin;
 import fr.factionbedrock.incarna.power.AttributeModifierPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.power.IncarnaTickablePower;
+import fr.factionbedrock.incarna.registry.ExperienceDeltaReasons;
 import fr.factionbedrock.incarna.util.PlayerHelper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +18,8 @@ public class PlayerTickMixin
     private void onTick(CallbackInfo info)
     {
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
+
+        PlayerHelper.deltaPlayerIncarnaExperience(player, ExperienceDeltaReasons.TICK);
 
         for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
         {

@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class IncarnaTrackedData
 {
+    public static final TrackedData<Integer> INCARNA_EXPERIENCE = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
     public static final TrackedData<String> TEAM = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.STRING);
     public static final TrackedData<String> SPECIES = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.STRING);
 
