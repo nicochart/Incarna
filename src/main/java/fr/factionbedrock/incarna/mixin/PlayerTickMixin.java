@@ -19,7 +19,7 @@ public class PlayerTickMixin
     {
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 
-        PlayerHelper.deltaPlayerIncarnaExperience(player, ExperienceDeltaReasons.TICK);
+        if (player.getServerWorld().getTime() % 20 == 0) {PlayerHelper.deltaPlayerIncarnaExperience(player, ExperienceDeltaReasons.TIME);}
 
         for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
         {

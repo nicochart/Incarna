@@ -10,7 +10,8 @@
 		"MilkBucketFinishUsingMixin",
 		"ClearStatusEffectsMixin",
 		"ProjectileEntityHitOrDeflectMixin",
-		"LivingEntityDamageMixin"
+		"LivingEntityDamageMixin",
+		"LivingEntityDeathMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

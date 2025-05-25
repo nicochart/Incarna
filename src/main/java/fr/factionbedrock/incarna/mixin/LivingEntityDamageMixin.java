@@ -4,7 +4,10 @@ import fr.factionbedrock.incarna.power.ActionOnDamagePower;
 import fr.factionbedrock.incarna.power.CancelDamageSufferedPower;
 import fr.factionbedrock.incarna.power.DamageSufferedModifierPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
+import fr.factionbedrock.incarna.registry.ExperienceDeltaReasons;
+import fr.factionbedrock.incarna.registry.IncarnaTags;
 import fr.factionbedrock.incarna.util.PlayerHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,18 +43,26 @@ public class LivingEntityDamageMixin
     @Inject(method = "damage", at = @At("HEAD"), cancellable = true)
     private void onDamage(DamageSource damageSource, float amount, CallbackInfoReturnable<Boolean> cir)
     {
-        LivingEntity entity = (LivingEntity)(Object)this;
+        LivingEntity damagedEntity = (LivingEntity)(Object)this;
+        Entity attackerEntity = damageSource.getAttacker();
 
-        if (entity instanceof PlayerEntity player)
+        if (damagedEntity instanceof PlayerEntity damagedPlayer)
         {
-            for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
+            //experience delta
+            if (attackerEntity instanceof PlayerEntity attackerPlayer && PlayerHelper.arePlayersInSameTeam(damagedPlayer, attackerPlayer))
+            {
+                PlayerHelper.deltaPlayerIncarnaExperience(attackerPlayer, ExperienceDeltaReasons.FRIENDLY_FIRE);
+            }
+
+            //power actions
+            for (IncarnaPower power : PlayerHelper.getAllPowersFrom(damagedPlayer))
             {
                 if (power instanceof CancelDamageSufferedPower cancelDamagePower)
                 {
                     CancelDamageSufferedPower.Info info = new CancelDamageSufferedPower.Info(damageSource, amount);
                     if (power instanceof ActionOnDamagePower actionOnDamagePower)
                     {
-                        actionOnDamagePower.tryTick(player, info);
+                        actionOnDamagePower.tryTick(damagedPlayer, info);
                     }
                     if (cancelDamagePower.shouldCancel(info)) {cir.setReturnValue(false);}
                 }
