@@ -25,6 +25,21 @@ public class PlayerHelper
     public static IncarnaTeam getPlayerTeam(PlayerEntity player) {return IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));}
     public static IncarnaSpecie getPlayerSpecies(PlayerEntity player) {return IncarnaSpecies.SPECIES_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.SPECIES));}
 
+    public static int getPlayerIncarnaLevel(PlayerEntity player)
+    {
+        int xp = getPlayerIncarnaExperience(player);
+        if (xp < 1000) {return 1;}
+        else if (xp < 4000) {return 2;}
+        else if (xp < 12000) {return 3;}
+        else if (xp < 36000) {return 4;}
+        else if (xp < 120000) {return 5;}
+        else if (xp < 400000) {return 6;}
+        else if (xp < 1200000) {return 7;}
+        else if (xp < 3000000) {return 8;}
+        else if (xp < 6000000) {return 9;}
+        else {return 10;}
+    }
+
     public static boolean arePlayersInSameTeam(PlayerEntity player1, PlayerEntity player2) {return getPlayerTeam(player1) == getPlayerTeam(player2);}
 
     public static void deltaPlayerIncarnaExperience(PlayerEntity player, ExperienceDeltaReason reason)
@@ -58,7 +73,7 @@ public class PlayerHelper
         {
             if (power instanceof AbilityPower abilityPower)
             {
-                abilityPower.tryTick(player, 1);
+                abilityPower.tryTick(player, PlayerHelper.getPlayerIncarnaLevel(player));
             }
         }
         IncarnaSpecie playerSpecie = PlayerHelper.getPlayerSpecies(player);

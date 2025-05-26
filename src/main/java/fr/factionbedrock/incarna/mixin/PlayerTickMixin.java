@@ -25,12 +25,12 @@ public class PlayerTickMixin
         {
             if (power instanceof IncarnaTickablePower tickablePower)
             {
-                tickablePower.tryTick(player, player.getServerWorld().getTime(), 1);
+                tickablePower.tryTick(player, player.getServerWorld().getTime(), PlayerHelper.getPlayerIncarnaLevel(player));
             }
 
             if (power instanceof AttributeModifierPower modifierPower)
             {
-                modifierPower.updatePlayerAttributeModifier(player, 1);
+                modifierPower.updatePlayerAttributeModifier(player, PlayerHelper.getPlayerIncarnaLevel(player));
             }
         }
     }
