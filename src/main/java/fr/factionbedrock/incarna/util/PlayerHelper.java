@@ -19,25 +19,42 @@ import java.util.List;
 
 public class PlayerHelper
 {
-    public static int MIN_INCARNA_EXPERIENCE = 0;
-    public static int MAX_INCARNA_EXPERIENCE = 10713600; //124 days in seconds
     public static int getPlayerIncarnaExperience(PlayerEntity player) {return player.getDataTracker().get(IncarnaTrackedData.INCARNA_EXPERIENCE);}
     public static IncarnaTeam getPlayerTeam(PlayerEntity player) {return IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));}
     public static IncarnaSpecie getPlayerSpecies(PlayerEntity player) {return IncarnaSpecies.SPECIES_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.SPECIES));}
 
     public static int getPlayerIncarnaLevel(PlayerEntity player)
     {
-        int xp = getPlayerIncarnaExperience(player);
-        if (xp < 1000) {return 1;}
-        else if (xp < 4000) {return 2;}
-        else if (xp < 12000) {return 3;}
-        else if (xp < 36000) {return 4;}
-        else if (xp < 120000) {return 5;}
-        else if (xp < 400000) {return 6;}
-        else if (xp < 1200000) {return 7;}
-        else if (xp < 3000000) {return 8;}
-        else if (xp < 6000000) {return 9;}
+        return getPlayerIncarnaLevelFromExperience(getPlayerIncarnaExperience(player));
+    }
+
+    public static int getPlayerIncarnaLevelFromExperience(int xp)
+    {
+        if (xp < ExperienceHelper.LEVEL_1) {return 1;}
+        else if (xp < ExperienceHelper.LEVEL_2) {return 2;}
+        else if (xp < ExperienceHelper.LEVEL_3) {return 3;}
+        else if (xp < ExperienceHelper.LEVEL_4) {return 4;}
+        else if (xp < ExperienceHelper.LEVEL_5) {return 5;}
+        else if (xp < ExperienceHelper.LEVEL_6) {return 6;}
+        else if (xp < ExperienceHelper.LEVEL_7) {return 7;}
+        else if (xp < ExperienceHelper.LEVEL_8) {return 8;}
+        else if (xp < ExperienceHelper.LEVEL_9) {return 9;}
         else {return 10;}
+    }
+
+    public static ExperienceLevelProgressionInfo getPlayerIncarnaLevelProgressionInfo(PlayerEntity player)
+    {
+        int xp = getPlayerIncarnaExperience(player);
+        if (xp < ExperienceHelper.LEVEL_1) {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_0, ExperienceHelper.LEVEL_1, xp);}
+        else if (xp < ExperienceHelper.LEVEL_2) {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_1, ExperienceHelper.LEVEL_2, xp);}
+        else if (xp < ExperienceHelper.LEVEL_3) {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_2, ExperienceHelper.LEVEL_3, xp);}
+        else if (xp < ExperienceHelper.LEVEL_4) {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_3, ExperienceHelper.LEVEL_4, xp);}
+        else if (xp < ExperienceHelper.LEVEL_5) {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_4, ExperienceHelper.LEVEL_5, xp);}
+        else if (xp < ExperienceHelper.LEVEL_6) {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_5, ExperienceHelper.LEVEL_6, xp);}
+        else if (xp < ExperienceHelper.LEVEL_7) {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_6, ExperienceHelper.LEVEL_7, xp);}
+        else if (xp < ExperienceHelper.LEVEL_8) {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_7, ExperienceHelper.LEVEL_8, xp);}
+        else if (xp < ExperienceHelper.LEVEL_9) {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_8, ExperienceHelper.LEVEL_9, xp);}
+        else {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_9, ExperienceHelper.LEVEL_10, xp);}
     }
 
     public static boolean arePlayersInSameTeam(PlayerEntity player1, PlayerEntity player2) {return getPlayerTeam(player1) == getPlayerTeam(player2);}
@@ -45,7 +62,7 @@ public class PlayerHelper
     public static void deltaPlayerIncarnaExperience(PlayerEntity player, ExperienceDeltaReason reason)
     {
         int previousExperience = getPlayerIncarnaExperience(player);
-        player.getDataTracker().set(IncarnaTrackedData.INCARNA_EXPERIENCE, Math.clamp(previousExperience + reason.delta(), MIN_INCARNA_EXPERIENCE, MAX_INCARNA_EXPERIENCE));
+        player.getDataTracker().set(IncarnaTrackedData.INCARNA_EXPERIENCE, Math.clamp(previousExperience + reason.delta(), ExperienceHelper.MIN_INCARNA_EXPERIENCE, ExperienceHelper.MAX_INCARNA_EXPERIENCE));
     }
 
     public static void updatePlayerChoice(PlayerEntity player, TrackedData<String> choiceTrackedData, IncarnaChoice previousChoice, IncarnaChoice newChoice)

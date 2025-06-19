@@ -3,5 +3,9 @@
   "item.incarna.experience_crystal.desc" : "Shard imbued with the power to grant you Incarna Experience",
   "block.incarna.team_choice_block" : "Team Choice Block",
   "block.incarna.species_choice_block" : "Species Choice Block",
-  "effect.incarna.ability_cooldown" : "Ability Cooldown"
+  "effect.incarna.ability_cooldown" : "Ability Cooldown",
+  "gui.incarna.info_screen" : "Incarna",
+  "gui.incarna.info_screen.player_level" : "Incarna Level :",
+  "gui.incarna.info_screen.player_next_level_progression" : "Progression :",
+  "gui.incarna.info_screen.player_experience" : "Total experience :"
 }

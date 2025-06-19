@@ -1,6 +1,7 @@
 package fr.factionbedrock.incarna.client.registry;
 
 import fr.factionbedrock.incarna.Incarna;
+import fr.factionbedrock.incarna.client.gui.InfoScreen;
 import fr.factionbedrock.incarna.packet.IncarnaData;
 import fr.factionbedrock.incarna.util.PlayerHelper;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -19,6 +20,13 @@ public class IncarnaKeyBinds
             "category."+ Incarna.MOD_ID
     );
 
+    public static final KeyBinding MENU_KEY = new KeyBinding(
+            "key."+ Incarna.MOD_ID+".ability",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_I,
+            "category."+ Incarna.MOD_ID
+    );
+
     public static void registerKeybindsAndPressedInteractions()
     {
         KeyBindingHelper.registerKeyBinding(ABILITY_KEY);
@@ -28,10 +36,19 @@ public class IncarnaKeyBinds
     public static void registerPressedInteractions()
     {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (ABILITY_KEY.wasPressed()) {
+            while (ABILITY_KEY.wasPressed())
+            {
                 if (client.player != null && PlayerHelper.canUseAbility(client.player))
                 {
                     ClientPlayNetworking.send(new IncarnaData("ability_use"));
+                }
+            }
+
+            while (MENU_KEY.wasPressed())
+            {
+                if (client.player != null)
+                {
+                    client.setScreen(new InfoScreen(client.player));
                 }
             }
         });

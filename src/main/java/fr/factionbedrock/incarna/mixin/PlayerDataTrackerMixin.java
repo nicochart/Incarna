@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static fr.factionbedrock.incarna.util.PlayerHelper.MIN_INCARNA_EXPERIENCE;
+import static fr.factionbedrock.incarna.util.ExperienceHelper.MIN_INCARNA_EXPERIENCE;
 
 @Mixin(PlayerEntity.class)
 public class PlayerDataTrackerMixin
