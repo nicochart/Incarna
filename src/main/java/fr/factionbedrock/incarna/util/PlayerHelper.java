@@ -3,6 +3,7 @@ package fr.factionbedrock.incarna.util;
 import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.choice.IncarnaSpecie;
 import fr.factionbedrock.incarna.choice.IncarnaTeam;
+import fr.factionbedrock.incarna.config.ServerLoadedConfig;
 import fr.factionbedrock.incarna.power.AbilityPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.registry.IncarnaMobEffects;
@@ -62,7 +63,8 @@ public class PlayerHelper
     public static void deltaPlayerIncarnaExperience(PlayerEntity player, ExperienceDeltaReason reason)
     {
         int previousExperience = getPlayerIncarnaExperience(player);
-        player.getDataTracker().set(IncarnaTrackedData.INCARNA_EXPERIENCE, Math.clamp(previousExperience + reason.delta(), ExperienceHelper.MIN_INCARNA_EXPERIENCE, ExperienceHelper.MAX_INCARNA_EXPERIENCE));
+        float multiplier = reason.delta() > 0 ? ServerLoadedConfig.XP_GAIN_MULTIPLIER : ServerLoadedConfig.XP_LOSS_MULTIPLIER;
+        player.getDataTracker().set(IncarnaTrackedData.INCARNA_EXPERIENCE, Math.clamp((int) (previousExperience + multiplier * reason.delta()), ExperienceHelper.MIN_INCARNA_EXPERIENCE, ExperienceHelper.MAX_INCARNA_EXPERIENCE));
     }
 
     public static void updatePlayerChoice(PlayerEntity player, TrackedData<String> choiceTrackedData, IncarnaChoice previousChoice, IncarnaChoice newChoice)

@@ -11,6 +11,8 @@ public class IncarnaNetworking
     {
         PayloadTypeRegistry.playC2S().register(IncarnaData.ID, IncarnaData.CODEC);
         PayloadTypeRegistry.playS2C().register(IncarnaData.ID, IncarnaData.CODEC);
+        PayloadTypeRegistry.playC2S().register(IncarnaS2CSynchData.ID, IncarnaS2CSynchData.CODEC);
+        PayloadTypeRegistry.playS2C().register(IncarnaS2CSynchData.ID, IncarnaS2CSynchData.CODEC);
     }
 
     public static void registerServerReceiver()
