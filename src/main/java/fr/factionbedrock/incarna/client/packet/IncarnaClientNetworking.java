@@ -12,7 +12,7 @@ public class IncarnaClientNetworking
         {
             if (payload.name().equals("sync_nsh_data"))
             {
-                ServerLoadedConfig.storeServerParams(payload.xpGainMultiplier(), payload.xpLossMultiplier());
+                ServerLoadedConfig.storeServerParams(payload.xpGainMultiplier(), payload.xpLossMultiplier(), payload.displayDebugInfoInInfoScreen());
             }
         });
     }

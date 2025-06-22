@@ -1,6 +1,7 @@
 package fr.factionbedrock.incarna.client.gui;
 
 import fr.factionbedrock.incarna.Incarna;
+import fr.factionbedrock.incarna.config.ServerLoadedConfig;
 import fr.factionbedrock.incarna.util.ExperienceLevelProgressionInfo;
 import fr.factionbedrock.incarna.util.PlayerHelper;
 import net.minecraft.client.gui.DrawContext;
@@ -40,6 +41,19 @@ public class InfoScreen extends Screen
         context.drawCenteredTextWithShadow(this.textRenderer, Text.translatable("gui."+Incarna.MOD_ID+".info_screen.player_experience"), this.width / 2, text_height, 0xFFFFFF);
         text_height+=10;
         context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("" + progressInfo.currentXp()), this.width / 2, text_height, 0xFF0000);
+
+        if (ServerLoadedConfig.DISPLAY_DEBUG_INFO_IN_INFO_SCREEN)
+        {
+            text_height+=20;
+            context.drawCenteredTextWithShadow(this.textRenderer, Text.translatable("gui."+Incarna.MOD_ID+".info_screen.xp_gain_multiplier"), this.width / 2, text_height, 0xFFFFFF);
+            text_height+=10;
+            context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("" + ServerLoadedConfig.XP_GAIN_MULTIPLIER), this.width / 2, text_height, 0xFF0000);
+
+            text_height+=20;
+            context.drawCenteredTextWithShadow(this.textRenderer, Text.translatable("gui."+Incarna.MOD_ID+".info_screen.xp_loss_multiplier"), this.width / 2, text_height, 0xFFFFFF);
+            text_height+=10;
+            context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("" + ServerLoadedConfig.XP_LOSS_MULTIPLIER), this.width / 2, text_height, 0xFF0000);
+        }
     }
 
     @Override public boolean shouldPause() {return false;}

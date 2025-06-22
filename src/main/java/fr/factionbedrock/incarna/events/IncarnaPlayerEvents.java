@@ -14,12 +14,12 @@ public class IncarnaPlayerEvents
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
         {
             ServerPlayerEntity player = handler.getPlayer();
-            ServerPlayNetworking.send(player, new IncarnaS2CSynchData("sync_nsh_data", Incarna.CONFIG.xpGainMultiplier, Incarna.CONFIG.xpLossMultiplier));
+            ServerPlayNetworking.send(player, new IncarnaS2CSynchData("sync_nsh_data", Incarna.CONFIG.xpGainMultiplier, Incarna.CONFIG.xpLossMultiplier, Incarna.CONFIG.displayDebugInfoInInfoScreen));
         });
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) ->
         {
-            ServerPlayNetworking.send(newPlayer, new IncarnaS2CSynchData("sync_nsh_data", Incarna.CONFIG.xpGainMultiplier, Incarna.CONFIG.xpLossMultiplier));
+            ServerPlayNetworking.send(newPlayer, new IncarnaS2CSynchData("sync_nsh_data", Incarna.CONFIG.xpGainMultiplier, Incarna.CONFIG.xpLossMultiplier, Incarna.CONFIG.displayDebugInfoInInfoScreen));
         });
     }
 }

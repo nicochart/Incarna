@@ -6,7 +6,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 
-public record IncarnaS2CSynchData(String name, float xpGainMultiplier, float xpLossMultiplier) implements CustomPayload
+public record IncarnaS2CSynchData(String name, float xpGainMultiplier, float xpLossMultiplier, boolean displayDebugInfoInInfoScreen) implements CustomPayload
 {
     public static final Id<IncarnaS2CSynchData> ID = new Id<>(Incarna.id("s2c_sync_data"));
 
@@ -14,6 +14,7 @@ public record IncarnaS2CSynchData(String name, float xpGainMultiplier, float xpL
             PacketCodecs.STRING, IncarnaS2CSynchData::name,
             PacketCodecs.FLOAT, IncarnaS2CSynchData::xpGainMultiplier,
             PacketCodecs.FLOAT, IncarnaS2CSynchData::xpLossMultiplier,
+            PacketCodecs.BOOL, IncarnaS2CSynchData::displayDebugInfoInInfoScreen,
             IncarnaS2CSynchData::new);
 
     @Override public Id<? extends CustomPayload> getId() {return ID;}

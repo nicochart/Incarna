@@ -27,7 +27,7 @@ public class Incarna implements ModInitializer, ClientModInitializer
 	@Override public void onInitialize()
 	{
 		CONFIG = IncarnaConfigLoader.loadConfig();
-		ServerLoadedConfig.storeServerParams(CONFIG.xpGainMultiplier, CONFIG.xpLossMultiplier);
+		ServerLoadedConfig.storeServerParams(CONFIG.xpGainMultiplier, CONFIG.xpLossMultiplier, CONFIG.displayDebugInfoInInfoScreen);
 		IncarnaBlocks.load();
 		IncarnaItems.load();
 		IncarnaBlockEntities.load();

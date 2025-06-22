@@ -7,5 +7,7 @@
   "gui.incarna.info_screen" : "Incarna",
   "gui.incarna.info_screen.player_level" : "Incarna Level :",
   "gui.incarna.info_screen.player_next_level_progression" : "Progression :",
-  "gui.incarna.info_screen.player_experience" : "Total experience :"
+  "gui.incarna.info_screen.player_experience" : "Total experience :",
+  "gui.incarna.info_screen.xp_gain_multiplier" : "Xp Gain Multiplier :",
+  "gui.incarna.info_screen.xp_loss_multiplier" : "Xp Loss Multiplier :"
 }
