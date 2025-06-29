@@ -20,9 +20,19 @@ public class OverridePlayerSkinMixin
         AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) (Object) this;
 
         IncarnaSpecie playerSpecies = PlayerHelper.getPlayerSpecies(player);
-        if (playerSpecies == IncarnaSpecies.ENDERIAN) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/enderian.png"));}
+        if (playerSpecies == IncarnaSpecies.DRAGON_BORN) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/dragon_born.png"));}
+        else if (playerSpecies == IncarnaSpecies.TIDE_BORN) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/tide_born.png"));}
+        else if (playerSpecies == IncarnaSpecies.ORC) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/orc.png"));}
+        else if (playerSpecies == IncarnaSpecies.NETHERIAN) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/netherian.png"));}
+        else if (playerSpecies == IncarnaSpecies.FALLEN_ANGEL) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/fallen_angel.png"));}
+        else if (playerSpecies == IncarnaSpecies.ENDERIAN) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/enderian.png"));}
         else if (playerSpecies == IncarnaSpecies.VOID_BORN) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/void_born.png"));}
         else if (playerSpecies == IncarnaSpecies.END_HYBRID) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/end_hybrid.png"));}
+        else if (playerSpecies == IncarnaSpecies.SHADOW_BORN) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/shadow_born.png"));}
+        else if (playerSpecies == IncarnaSpecies.ELF) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/elf.png"));}
+        else if (playerSpecies == IncarnaSpecies.AERIAN) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/aerian.png"));}
+        else if (playerSpecies == IncarnaSpecies.LUNAR_ELF) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/lunar_elf.png"));}
+        else if (playerSpecies == IncarnaSpecies.VOLUCITE_SERVANT) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/volucite_servant.png"));}
     }
 
     private static SkinTextures createSkinTextures(String texture)
