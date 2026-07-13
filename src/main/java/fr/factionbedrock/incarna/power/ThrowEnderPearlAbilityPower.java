@@ -1,27 +1,26 @@
 package fr.factionbedrock.incarna.power;
 
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-
 import java.util.function.Function;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.item.Items;
 
 public class ThrowEnderPearlAbilityPower extends AbilityPower
 {
     public ThrowEnderPearlAbilityPower() {this((player) -> true);}
 
-    public ThrowEnderPearlAbilityPower(Function<ServerPlayerEntity, Boolean> canTick) {super(canTick);}
+    public ThrowEnderPearlAbilityPower(Function<ServerPlayer, Boolean> canTick) {super(canTick);}
 
-    @Override protected void tick(ServerPlayerEntity player, int level)
+    @Override protected void tick(ServerPlayer player, int level)
     {
-        ServerWorld world = player.getServerWorld();
-        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_ENDER_PEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
-        EnderPearlEntity enderPearlEntity = new EnderPearlEntity(world, player);
-        enderPearlEntity.setItem(Items.ENDER_PEARL.getDefaultStack());
-        enderPearlEntity.setVelocity(player, player.getPitch(), player.getYaw(), 0.0F, 1.5F, 1.0F);
-        world.spawnEntity(enderPearlEntity);
+        ServerLevel world = player.serverLevel();
+        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
+        ThrownEnderpearl enderPearlEntity = new ThrownEnderpearl(world, player);
+        enderPearlEntity.setItem(Items.ENDER_PEARL.getDefaultInstance());
+        enderPearlEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
+        world.addFreshEntity(enderPearlEntity);
     }
 }

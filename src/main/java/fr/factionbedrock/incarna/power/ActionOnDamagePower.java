@@ -1,8 +1,7 @@
 package fr.factionbedrock.incarna.power;
 
-import net.minecraft.entity.player.PlayerEntity;
-
 import java.util.function.Function;
+import net.minecraft.world.entity.player.Player;
 
 public abstract class ActionOnDamagePower extends CancelDamageSufferedPower
 {
@@ -16,10 +15,10 @@ public abstract class ActionOnDamagePower extends CancelDamageSufferedPower
         this.shouldAction = shouldAction;
     }
 
-    public void tryTick(PlayerEntity player, CancelDamageSufferedPower.Info info)
+    public void tryTick(Player player, CancelDamageSufferedPower.Info info)
     {
         if (shouldAction.apply(info)) {this.tick(player);}
     }
 
-    protected abstract void tick(PlayerEntity player);
+    protected abstract void tick(Player player);
 }

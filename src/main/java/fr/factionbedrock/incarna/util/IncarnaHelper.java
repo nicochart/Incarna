@@ -4,28 +4,27 @@ import fr.factionbedrock.incarna.Incarna;
 import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.power.AttributeModifierPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.functions.CommandFunction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.function.CommandFunction;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.Optional;
 
 public class IncarnaHelper
 {
-    public static void runFunction(ServerPlayerEntity user, String functionName)
+    public static void runFunction(ServerPlayer user, String functionName)
     {
         MinecraftServer server = user.server;
-        ServerWorld world = user.getServerWorld();
-        Identifier functionId = Incarna.id(functionName);
+        ServerLevel world = user.serverLevel();
+        ResourceLocation functionId = Incarna.id(functionName);
 
-        Optional<CommandFunction<ServerCommandSource>> mcFunction = server.getCommandFunctionManager().getFunction(functionId);
+        Optional<CommandFunction<CommandSourceStack>> mcFunction = server.getFunctions().get(functionId);
 
         mcFunction.ifPresent(function -> {
-            ServerCommandSource source = server.getCommandSource().withEntity(user).withWorld(world).withPosition(user.getPos()).withSilent();
-            server.getCommandFunctionManager().execute(function, source);
+            CommandSourceStack source = server.createCommandSourceStack().withEntity(user).withLevel(world).withPosition(user.position()).withSuppressedOutput();
+            server.getFunctions().execute(function, source);
         });
     }
 }

@@ -1,21 +1,21 @@
 package fr.factionbedrock.incarna.packet;
 
 import fr.factionbedrock.incarna.Incarna;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-public record IncarnaS2CSynchData(String name, float xpGainMultiplier, float xpLossMultiplier, boolean displayDebugInfoInInfoScreen) implements CustomPayload
+public record IncarnaS2CSynchData(String name, float xpGainMultiplier, float xpLossMultiplier, boolean displayDebugInfoInInfoScreen) implements CustomPacketPayload
 {
-    public static final Id<IncarnaS2CSynchData> ID = new Id<>(Incarna.id("s2c_sync_data"));
+    public static final Type<IncarnaS2CSynchData> ID = new Type<>(Incarna.id("s2c_sync_data"));
 
-    public static final PacketCodec<RegistryByteBuf, IncarnaS2CSynchData> CODEC = PacketCodec.tuple(
-            PacketCodecs.STRING, IncarnaS2CSynchData::name,
-            PacketCodecs.FLOAT, IncarnaS2CSynchData::xpGainMultiplier,
-            PacketCodecs.FLOAT, IncarnaS2CSynchData::xpLossMultiplier,
-            PacketCodecs.BOOL, IncarnaS2CSynchData::displayDebugInfoInInfoScreen,
+    public static final StreamCodec<RegistryFriendlyByteBuf, IncarnaS2CSynchData> CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, IncarnaS2CSynchData::name,
+            ByteBufCodecs.FLOAT, IncarnaS2CSynchData::xpGainMultiplier,
+            ByteBufCodecs.FLOAT, IncarnaS2CSynchData::xpLossMultiplier,
+            ByteBufCodecs.BOOL, IncarnaS2CSynchData::displayDebugInfoInInfoScreen,
             IncarnaS2CSynchData::new);
 
-    @Override public Id<? extends CustomPayload> getId() {return ID;}
+    @Override public Type<? extends CustomPacketPayload> type() {return ID;}
 }

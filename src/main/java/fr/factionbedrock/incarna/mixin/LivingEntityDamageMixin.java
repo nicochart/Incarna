@@ -7,10 +7,10 @@ import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.registry.ExperienceDeltaReasons;
 import fr.factionbedrock.incarna.registry.IncarnaTags;
 import fr.factionbedrock.incarna.util.PlayerHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,12 +20,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public class LivingEntityDamageMixin
 {
-    @ModifyArg(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"), index = 1)
+    @ModifyArg(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V"), index = 1)
     private float modifyEntityDamage(DamageSource source, float amount)
     {
         LivingEntity entity = (LivingEntity)(Object)this;
 
-        if (entity instanceof PlayerEntity player)
+        if (entity instanceof Player player)
         {
             float modifiedAmount = amount;
             for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
@@ -40,16 +40,16 @@ public class LivingEntityDamageMixin
         return amount;
     }
 
-    @Inject(method = "damage", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void onDamage(DamageSource damageSource, float amount, CallbackInfoReturnable<Boolean> cir)
     {
         LivingEntity damagedEntity = (LivingEntity)(Object)this;
-        Entity attackerEntity = damageSource.getAttacker();
+        Entity attackerEntity = damageSource.getEntity();
 
-        if (damagedEntity instanceof PlayerEntity damagedPlayer)
+        if (damagedEntity instanceof Player damagedPlayer)
         {
             //experience delta
-            if (attackerEntity instanceof PlayerEntity attackerPlayer && PlayerHelper.arePlayersInSameTeam(damagedPlayer, attackerPlayer))
+            if (attackerEntity instanceof Player attackerPlayer && PlayerHelper.arePlayersInSameTeam(damagedPlayer, attackerPlayer))
             {
                 PlayerHelper.deltaPlayerIncarnaExperience(attackerPlayer, ExperienceDeltaReasons.FRIENDLY_FIRE);
             }

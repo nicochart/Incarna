@@ -4,51 +4,49 @@ import com.mojang.serialization.MapCodec;
 import fr.factionbedrock.incarna.blockentity.ChoiceBlockEntity;
 import fr.factionbedrock.incarna.choice.IncarnaChoice;
 import fr.factionbedrock.incarna.util.PlayerHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.BlockHitResult;
 
-public abstract class ChoiceBlock extends BlockWithEntity
+public abstract class ChoiceBlock extends BaseEntityBlock
 {
-    public static final BooleanProperty IS_LOCKED = BooleanProperty.of("is_locked");
+    public static final BooleanProperty IS_LOCKED = BooleanProperty.create("is_locked");
 
-    public ChoiceBlock(Settings settings)
+    public ChoiceBlock(Properties settings)
     {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(IS_LOCKED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(IS_LOCKED, false));
     }
 
-    @Override protected abstract MapCodec<? extends ChoiceBlock> getCodec();
-    @Override public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {return new ChoiceBlockEntity(pos, state);}
+    @Override protected abstract MapCodec<? extends ChoiceBlock> codec();
+    @Override public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {return new ChoiceBlockEntity(pos, state);}
 
-    @Override protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {builder.add(IS_LOCKED);}
+    @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {builder.add(IS_LOCKED);}
 
-    @Override public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity)
+    @Override public void stepOn(Level world, BlockPos pos, BlockState state, Entity entity)
     {
-        if (entity instanceof PlayerEntity player)
+        if (entity instanceof Player player)
         {
             IncarnaChoice blockChoice = this.getIndexesToChoiceList().get(this.getChoiceIndex(state));
-            IncarnaChoice previousPlayerChoice = this.getNamesToChoiceList().get(player.getDataTracker().get(this.getTrackedData()));
+            IncarnaChoice previousPlayerChoice = this.getNamesToChoiceList().get(player.getEntityData().get(this.getTrackedData()));
             if (previousPlayerChoice == getDefaultChoice() && blockChoice != getDefaultChoice() && this.canPlayerChooseChoice(player, blockChoice))
             {
                 this.updatePlayerChoice(world, pos, player, previousPlayerChoice, blockChoice);
@@ -60,51 +58,51 @@ public abstract class ChoiceBlock extends BlockWithEntity
         }
     }
 
-    @Override protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit)
+    @Override protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit)
     {
         int currentIndex = this.getChoiceIndex(state);
-        boolean locked = state.get(IS_LOCKED);
-        if (player.isCreative() && player.isSneaking())
+        boolean locked = state.getValue(IS_LOCKED);
+        if (player.isCreative() && player.isShiftKeyDown())
         {
-            world.setBlockState(pos, state.with(IS_LOCKED, !locked));
-            player.sendMessage(Text.literal("Block is now "+(locked? "un" : "")+"locked with "+this.getChoiceTypeString()+" : "+this.getIndexesToChoiceList().get(currentIndex).name()), true);
-            world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
+            world.setBlockAndUpdate(pos, state.setValue(IS_LOCKED, !locked));
+            player.displayClientMessage(Component.literal("Block is now "+(locked? "un" : "")+"locked with "+this.getChoiceTypeString()+" : "+this.getIndexesToChoiceList().get(currentIndex).name()), true);
+            world.playSound(player, pos, SoundEvents.NOTE_BLOCK_BASEDRUM.value(), SoundSource.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
         }
         else
         {
             if (!locked)
             {
                 int newIndex = this.getNextIndex(currentIndex);
-                world.setBlockState(pos, state.with(this.getChoiceIndexProperty(), newIndex));
-                player.sendMessage(Text.literal("Block "+this.getChoiceTypeString()+" : "+this.getIndexesToChoiceList().get(newIndex).name()), true);
-                world.playSound(player, pos, SoundEvents.BLOCK_NOTE_BLOCK_BIT.value(), SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
+                world.setBlockAndUpdate(pos, state.setValue(this.getChoiceIndexProperty(), newIndex));
+                player.displayClientMessage(Component.literal("Block "+this.getChoiceTypeString()+" : "+this.getIndexesToChoiceList().get(newIndex).name()), true);
+                world.playSound(player, pos, SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
             }
             else
             {
-                player.sendMessage(Text.literal("Block "+this.getChoiceTypeString()+" : "+this.getIndexesToChoiceList().get(currentIndex).name()), true);
+                player.displayClientMessage(Component.literal("Block "+this.getChoiceTypeString()+" : "+this.getIndexesToChoiceList().get(currentIndex).name()), true);
             }
         }
-        return super.onUse(state, world, pos, player, hit);
+        return super.useWithoutItem(state, world, pos, player, hit);
     }
 
-    protected void updatePlayerChoice(World world, BlockPos pos, PlayerEntity player, IncarnaChoice previousChoice, IncarnaChoice newChoice)
+    protected void updatePlayerChoice(Level world, BlockPos pos, Player player, IncarnaChoice previousChoice, IncarnaChoice newChoice)
     {
         PlayerHelper.updatePlayerChoice(player, this.getTrackedData(), previousChoice, newChoice);
         boolean resetToDefault = newChoice == this.getDefaultChoice();
-        SoundEvent soundEvent = resetToDefault ? SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value() : SoundEvents.BLOCK_NOTE_BLOCK_HARP.value();
-        world.playSound(player, pos, soundEvent, SoundCategory.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
+        SoundEvent soundEvent = resetToDefault ? SoundEvents.NOTE_BLOCK_FLUTE.value() : SoundEvents.NOTE_BLOCK_HARP.value();
+        world.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 0.9F + (0.2F * world.random.nextFloat()));
     }
 
-    protected int getChoiceIndex(BlockState state) {return state.get(this.getChoiceIndexProperty());}
+    protected int getChoiceIndex(BlockState state) {return state.getValue(this.getChoiceIndexProperty());}
     protected abstract int getMaxIndex();
 
-    protected abstract IntProperty getChoiceIndexProperty();
+    protected abstract IntegerProperty getChoiceIndexProperty();
     protected abstract LinkedHashMap<Integer, ? extends IncarnaChoice> getIndexesToChoiceList();
     protected abstract LinkedHashMap<String, ? extends IncarnaChoice> getNamesToChoiceList();
-    protected abstract TrackedData<String> getTrackedData();
+    protected abstract EntityDataAccessor<String> getTrackedData();
     protected abstract IncarnaChoice getDefaultChoice();
 
-    protected abstract boolean canPlayerChooseChoice(PlayerEntity player, IncarnaChoice choice);
+    protected abstract boolean canPlayerChooseChoice(Player player, IncarnaChoice choice);
 
     protected abstract String getChoiceTypeString();
 

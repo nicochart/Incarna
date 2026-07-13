@@ -1,45 +1,45 @@
 package fr.factionbedrock.incarna.mixin;
 
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public class PlayerNbtMixin
 {
     private static String incarna_experience = "incarna_experience";
     private static String team = "team";
     private static String species = "species";
 
-    @Inject(at = @At("RETURN"), method = "readCustomDataFromNbt")
-    private void read(NbtCompound nbt, CallbackInfo info)
+    @Inject(at = @At("RETURN"), method = "readAdditionalSaveData")
+    private void read(CompoundTag nbt, CallbackInfo info)
     {
-        PlayerEntity player = (PlayerEntity) (Object) this;
-        if (nbt.contains(incarna_experience, NbtElement.INT_TYPE))
+        Player player = (Player) (Object) this;
+        if (nbt.contains(incarna_experience, Tag.TAG_INT))
         {
-            player.getDataTracker().set(IncarnaTrackedData.INCARNA_EXPERIENCE, nbt.getInt(incarna_experience));
+            player.getEntityData().set(IncarnaTrackedData.INCARNA_EXPERIENCE, nbt.getInt(incarna_experience));
         }
-        if (nbt.contains(team, NbtElement.STRING_TYPE))
+        if (nbt.contains(team, Tag.TAG_STRING))
         {
-            player.getDataTracker().set(IncarnaTrackedData.TEAM, nbt.getString(team));
+            player.getEntityData().set(IncarnaTrackedData.TEAM, nbt.getString(team));
         }
-        if (nbt.contains(species, NbtElement.STRING_TYPE))
+        if (nbt.contains(species, Tag.TAG_STRING))
         {
-            player.getDataTracker().set(IncarnaTrackedData.SPECIES, nbt.getString(species));
+            player.getEntityData().set(IncarnaTrackedData.SPECIES, nbt.getString(species));
         }
     }
 
-    @Inject(at = @At("RETURN"), method = "writeCustomDataToNbt")
-    private void write(NbtCompound nbt, CallbackInfo info)
+    @Inject(at = @At("RETURN"), method = "addAdditionalSaveData")
+    private void write(CompoundTag nbt, CallbackInfo info)
     {
-        PlayerEntity player = (PlayerEntity) (Object) this;
-        nbt.putInt(incarna_experience, player.getDataTracker().get(IncarnaTrackedData.INCARNA_EXPERIENCE));
-        nbt.putString(team, player.getDataTracker().get(IncarnaTrackedData.TEAM));
-        nbt.putString(species, player.getDataTracker().get(IncarnaTrackedData.SPECIES));
+        Player player = (Player) (Object) this;
+        nbt.putInt(incarna_experience, player.getEntityData().get(IncarnaTrackedData.INCARNA_EXPERIENCE));
+        nbt.putString(team, player.getEntityData().get(IncarnaTrackedData.TEAM));
+        nbt.putString(species, player.getEntityData().get(IncarnaTrackedData.SPECIES));
     }
 }

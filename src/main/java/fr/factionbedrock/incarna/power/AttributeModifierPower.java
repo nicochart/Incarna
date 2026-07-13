@@ -2,31 +2,30 @@ package fr.factionbedrock.incarna.power;
 
 import fr.factionbedrock.incarna.Incarna;
 import fr.factionbedrock.incarna.util.ModifierInfo;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-
 import java.util.function.Function;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
 
 public class AttributeModifierPower extends IncarnaPower
 {
-    public static final Identifier SPEED_MODIFIER = Incarna.id("speed_modifier");
-    public static final Identifier JUMP_STRENGTH_MODIFIER = Incarna.id("jump_strength_modifier");
-    public static final Identifier ARMOR_MODIFIER = Incarna.id("armor_modifier");
-    public static final Identifier SCALE_MODIFIER = Incarna.id("scale_modifier");
+    public static final ResourceLocation SPEED_MODIFIER = Incarna.id("speed_modifier");
+    public static final ResourceLocation JUMP_STRENGTH_MODIFIER = Incarna.id("jump_strength_modifier");
+    public static final ResourceLocation ARMOR_MODIFIER = Incarna.id("armor_modifier");
+    public static final ResourceLocation SCALE_MODIFIER = Incarna.id("scale_modifier");
 
-    private final RegistryEntry<EntityAttribute> attribute;
-    private final Identifier modifierId;
+    private final Holder<Attribute> attribute;
+    private final ResourceLocation modifierId;
     private final double baseValue;
     private final Function<ModifierInfo, Double> modifierValue;
-    private final EntityAttributeModifier.Operation modifierOperation;
+    private final AttributeModifier.Operation modifierOperation;
 
 
-    public AttributeModifierPower(RegistryEntry<EntityAttribute> attribute, Identifier modifierId, double baseValue, Function<ModifierInfo, Double> modifierValue, EntityAttributeModifier.Operation modifierOperation)
+    public AttributeModifierPower(Holder<Attribute> attribute, ResourceLocation modifierId, double baseValue, Function<ModifierInfo, Double> modifierValue, AttributeModifier.Operation modifierOperation)
     {
         super();
         this.attribute = attribute;
@@ -36,38 +35,38 @@ public class AttributeModifierPower extends IncarnaPower
         this.modifierOperation = modifierOperation;
     }
 
-    @Override public void onRemovedFromPlayer(PlayerEntity player)
+    @Override public void onRemovedFromPlayer(Player player)
     {
-        if (player instanceof ServerPlayerEntity serverPlayer) {removePlayerAttributeModifier(serverPlayer);}
+        if (player instanceof ServerPlayer serverPlayer) {removePlayerAttributeModifier(serverPlayer);}
     }
 
-    public void updatePlayerAttributeModifier(ServerPlayerEntity player, int powerLevel)
+    public void updatePlayerAttributeModifier(ServerPlayer player, int powerLevel)
     {
-        EntityAttributeInstance attribute = player.getAttributeInstance(this.attribute);
+        AttributeInstance attribute = player.getAttribute(this.attribute);
         if (attribute != null)
         {
             attribute.removeModifier(this.modifierId);
-            attribute.addTemporaryModifier(this.getModifier(powerLevel));
+            attribute.addTransientModifier(this.getModifier(powerLevel));
         }
     }
 
-    public void removePlayerAttributeModifier(ServerPlayerEntity player)
+    public void removePlayerAttributeModifier(ServerPlayer player)
     {
-        EntityAttributeInstance attribute = player.getAttributeInstance(this.attribute);
+        AttributeInstance attribute = player.getAttribute(this.attribute);
         if (attribute != null)
         {
             attribute.removeModifier(this.modifierId);
         }
     }
 
-    private EntityAttributeModifier getModifier(int powerLevel)
+    private AttributeModifier getModifier(int powerLevel)
     {
-        return new EntityAttributeModifier(
+        return new AttributeModifier(
                 modifierId,
                 modifierValue.apply(new ModifierInfo(baseValue, powerLevel)),
                 modifierOperation
         );
     }
 
-    public Identifier getId() {return modifierId;}
+    public ResourceLocation getId() {return modifierId;}
 }

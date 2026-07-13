@@ -3,29 +3,29 @@ package fr.factionbedrock.incarna.mixin;
 import fr.factionbedrock.incarna.power.ActionOnProjectileHitPower;
 import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.util.PlayerHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ProjectileDeflection;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileDeflection;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ProjectileEntity.class)
+@Mixin(Projectile.class)
 public class ProjectileEntityHitOrDeflectMixin
 {
-    @Inject(method = "hitOrDeflect", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "hitTargetOrDeflectSelf", at = @At("HEAD"), cancellable = true)
     private void onHitOrDeflect(HitResult hitResult, CallbackInfoReturnable<ProjectileDeflection> cir)
     {
-        ProjectileEntity projectile = (ProjectileEntity) (Object) this;
+        Projectile projectile = (Projectile) (Object) this;
 
         if (!(hitResult instanceof EntityHitResult entityHitResult)) {return;}
 
         Entity target = entityHitResult.getEntity();
-        if (target instanceof ServerPlayerEntity player)
+        if (target instanceof ServerPlayer player)
         {
             for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
             {
@@ -34,7 +34,7 @@ public class ProjectileEntityHitOrDeflectMixin
                     actionPower.tryTick(player, projectile);
                     if (actionPower.shouldCancelHitOrDeflect(projectile))
                     {
-                        cir.setReturnValue(ProjectileDeflection.SIMPLE);
+                        cir.setReturnValue(ProjectileDeflection.REVERSE);
                         cir.cancel();
                     }
                 }

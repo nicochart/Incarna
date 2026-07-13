@@ -4,20 +4,20 @@ import fr.factionbedrock.incarna.Incarna;
 import fr.factionbedrock.incarna.choice.IncarnaSpecie;
 import fr.factionbedrock.incarna.registry.IncarnaSpecies;
 import fr.factionbedrock.incarna.util.PlayerHelper;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.util.SkinTextures;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.resources.PlayerSkin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(AbstractClientPlayerEntity.class)
+@Mixin(AbstractClientPlayer.class)
 public class OverridePlayerSkinMixin
 {
-    @Inject(at = @At("HEAD"), method = "getSkinTextures", cancellable = true)
-    public void overrideSkin(CallbackInfoReturnable<SkinTextures> cir)
+    @Inject(at = @At("HEAD"), method = "getSkin", cancellable = true)
+    public void overrideSkin(CallbackInfoReturnable<PlayerSkin> cir)
     {
-        AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) (Object) this;
+        AbstractClientPlayer player = (AbstractClientPlayer) (Object) this;
 
         IncarnaSpecie playerSpecies = PlayerHelper.getPlayerSpecies(player);
         if (playerSpecies == IncarnaSpecies.DRAGON_BORN) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/dragon_born.png"));}
@@ -35,13 +35,13 @@ public class OverridePlayerSkinMixin
         else if (playerSpecies == IncarnaSpecies.VOLUCITE_SERVANT) {cir.setReturnValue(createSkinTextures("textures/entity/player/wide/volucite_servant.png"));}
     }
 
-    private static SkinTextures createSkinTextures(String texture)
+    private static PlayerSkin createSkinTextures(String texture)
     {
-        return createSkinTextures(texture, SkinTextures.Model.WIDE);
+        return createSkinTextures(texture, PlayerSkin.Model.WIDE);
     }
 
-    private static SkinTextures createSkinTextures(String texture, SkinTextures.Model model)
+    private static PlayerSkin createSkinTextures(String texture, PlayerSkin.Model model)
     {
-        return new SkinTextures(Incarna.id(texture), null, null, null, model, true);
+        return new PlayerSkin(Incarna.id(texture), null, null, null, model, true);
     }
 }

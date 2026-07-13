@@ -5,7 +5,7 @@ import fr.factionbedrock.incarna.packet.IncarnaS2CSynchData;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public class IncarnaPlayerEvents
 {
@@ -13,7 +13,7 @@ public class IncarnaPlayerEvents
     {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
         {
-            ServerPlayerEntity player = handler.getPlayer();
+            ServerPlayer player = handler.getPlayer();
             ServerPlayNetworking.send(player, new IncarnaS2CSynchData("sync_nsh_data", Incarna.CONFIG.xpGainMultiplier, Incarna.CONFIG.xpLossMultiplier, Incarna.CONFIG.displayDebugInfoInInfoScreen));
         });
 

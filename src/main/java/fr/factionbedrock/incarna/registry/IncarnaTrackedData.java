@@ -1,15 +1,15 @@
 package fr.factionbedrock.incarna.registry;
 
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.player.Player;
 
 public class IncarnaTrackedData
 {
-    public static final TrackedData<Integer> INCARNA_EXPERIENCE = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    public static final TrackedData<String> TEAM = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.STRING);
-    public static final TrackedData<String> SPECIES = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.STRING);
+    public static final EntityDataAccessor<Integer> INCARNA_EXPERIENCE = SynchedEntityData.defineId(Player.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<String> TEAM = SynchedEntityData.defineId(Player.class, EntityDataSerializers.STRING);
+    public static final EntityDataAccessor<String> SPECIES = SynchedEntityData.defineId(Player.class, EntityDataSerializers.STRING);
 
     public static void load() {}
 }

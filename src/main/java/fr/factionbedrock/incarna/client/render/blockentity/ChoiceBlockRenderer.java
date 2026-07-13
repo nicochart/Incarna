@@ -3,30 +3,36 @@ package fr.factionbedrock.incarna.client.render.blockentity;
 import fr.factionbedrock.incarna.Incarna;
 import fr.factionbedrock.incarna.blockentity.ChoiceBlockEntity;
 import fr.factionbedrock.incarna.registry.IncarnaBlocks;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.CommonColors;
 import org.joml.Matrix4f;
 
-import static net.minecraft.client.render.RenderPhase.*;
+import static net.minecraft.client.renderer.RenderStateShard.*;
+
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 public class ChoiceBlockRenderer<T extends ChoiceBlockEntity> implements BlockEntityRenderer<T>
 {
-    public static final Identifier TEAM_CHOICE_BLOCK_OUTER = Incarna.id("textures/block/team_choice_block.png");
-    public static final Identifier SPECIES_CHOICE_BLOCK_OUTER = Incarna.id("textures/block/species_choice_block.png");
-    public static final Identifier CHOICE_BLOCK_INNER_BACKGROUND = Incarna.id("textures/entity/choice_block_background.png");
-    public static final Identifier CHOICE_BLOCK_INNER = Incarna.id("textures/entity/choice_block.png");
+    public static final ResourceLocation TEAM_CHOICE_BLOCK_OUTER = Incarna.id("textures/block/team_choice_block.png");
+    public static final ResourceLocation SPECIES_CHOICE_BLOCK_OUTER = Incarna.id("textures/block/species_choice_block.png");
+    public static final ResourceLocation CHOICE_BLOCK_INNER_BACKGROUND = Incarna.id("textures/entity/choice_block_background.png");
+    public static final ResourceLocation CHOICE_BLOCK_INNER = Incarna.id("textures/entity/choice_block.png");
 
-    public ChoiceBlockRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public ChoiceBlockRenderer(BlockEntityRendererProvider.Context ctx) {}
 
-    @Override public void render(T blockEntity, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay)
+    @Override public void render(T blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay)
     {
-        Identifier outerTexture = blockEntity.getCachedState().isOf(IncarnaBlocks.TEAM_CHOICE_BLOCK) ? TEAM_CHOICE_BLOCK_OUTER : SPECIES_CHOICE_BLOCK_OUTER;
-        Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
+        ResourceLocation outerTexture = blockEntity.getBlockState().is(IncarnaBlocks.TEAM_CHOICE_BLOCK) ? TEAM_CHOICE_BLOCK_OUTER : SPECIES_CHOICE_BLOCK_OUTER;
+        Matrix4f matrix4f = matrixStack.last().pose();
         this.renderInnerSides(matrix4f, vertexConsumerProvider.getBuffer(getInnerLayer()));
         this.renderOuterSides(matrix4f, vertexConsumerProvider.getBuffer(getOuterLayer(outerTexture)));
     }
@@ -43,10 +49,10 @@ public class ChoiceBlockRenderer<T extends ChoiceBlockEntity> implements BlockEn
 
     private void renderOuterSide(Matrix4f model, VertexConsumer vertices, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, Direction side)
     {
-        vertices.vertex(model, x1, y1, z1).color(Colors.WHITE).texture(0, 1).light(0xF000F0).normal(z2, z3, z4);
-        vertices.vertex(model, x2, y1, z2).color(Colors.WHITE).texture(1, 1).light(0xF000F0).normal(z2, z3, z4);
-        vertices.vertex(model, x2, y2, z3).color(Colors.WHITE).texture(1, 0).light(0xF000F0).normal(z2, z3, z4);
-        vertices.vertex(model, x1, y2, z4).color(Colors.WHITE).texture(0, 0).light(0xF000F0).normal(z2, z3, z4);
+        vertices.addVertex(model, x1, y1, z1).setColor(CommonColors.WHITE).setUv(0, 1).setLight(0xF000F0).setNormal(z2, z3, z4);
+        vertices.addVertex(model, x2, y1, z2).setColor(CommonColors.WHITE).setUv(1, 1).setLight(0xF000F0).setNormal(z2, z3, z4);
+        vertices.addVertex(model, x2, y2, z3).setColor(CommonColors.WHITE).setUv(1, 0).setLight(0xF000F0).setNormal(z2, z3, z4);
+        vertices.addVertex(model, x1, y2, z4).setColor(CommonColors.WHITE).setUv(0, 0).setLight(0xF000F0).setNormal(z2, z3, z4);
     }
 
     private void renderInnerSides(Matrix4f matrix, VertexConsumer vertexConsumer)
@@ -61,50 +67,50 @@ public class ChoiceBlockRenderer<T extends ChoiceBlockEntity> implements BlockEn
 
     private void renderInnerSide(Matrix4f model, VertexConsumer vertices, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, Direction side)
     {
-        vertices.vertex(model, x1, y1, z1);
-        vertices.vertex(model, x2, y1, z2);
-        vertices.vertex(model, x2, y2, z3);
-        vertices.vertex(model, x1, y2, z4);
+        vertices.addVertex(model, x1, y1, z1);
+        vertices.addVertex(model, x2, y1, z2);
+        vertices.addVertex(model, x2, y2, z3);
+        vertices.addVertex(model, x1, y2, z4);
     }
 
     //inspired of CUTOUT RenderLayer
-    protected static RenderLayer getOuterLayer(Identifier textureIdentifier)
+    protected static RenderType getOuterLayer(ResourceLocation textureIdentifier)
     {
-        return RenderLayer.of(
+        return RenderType.create(
                 "choice_block_outer_layer",
-                VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL,
-                VertexFormat.DrawMode.QUADS,
+                DefaultVertexFormat.BLOCK,
+                VertexFormat.Mode.QUADS,
                 786432,
                 true,
                 false,
-                RenderLayer.MultiPhaseParameters.builder().lightmap(ENABLE_LIGHTMAP).program(CUTOUT_PROGRAM).texture(getOuterLayerRenderPhaseTexture(textureIdentifier)).build(true)
+                RenderType.CompositeState.builder().setLightmapState(LIGHTMAP).setShaderState(RENDERTYPE_CUTOUT_SHADER).setTextureState(getOuterLayerRenderPhaseTexture(textureIdentifier)).createCompositeState(true)
         );
     }
 
-    public static RenderPhase.Texture getOuterLayerRenderPhaseTexture(Identifier textureIdentifier)
+    public static RenderStateShard.TextureStateShard getOuterLayerRenderPhaseTexture(ResourceLocation textureIdentifier)
     {
-        return new RenderPhase.Texture(textureIdentifier, false, false);
+        return new RenderStateShard.TextureStateShard(textureIdentifier, false, false);
     }
 
     //inspired of RenderLayer.END_GATEWAY
-    protected static RenderLayer getInnerLayer()
+    protected static RenderType getInnerLayer()
     {
-        return RenderLayer.of(
+        return RenderType.create(
                 "choice_block_inner_layer",
-                VertexFormats.POSITION,
-                VertexFormat.DrawMode.QUADS,
+                DefaultVertexFormat.POSITION,
+                VertexFormat.Mode.QUADS,
                 1536,
                 false,
                 false,
-                RenderLayer.MultiPhaseParameters.builder()
-                        .program(RenderPhase.END_GATEWAY_PROGRAM)
-                        .texture(
-                                RenderPhase.Textures.create()
+                RenderType.CompositeState.builder()
+                        .setShaderState(RenderStateShard.RENDERTYPE_END_GATEWAY_SHADER)
+                        .setTextureState(
+                                RenderStateShard.MultiTextureStateShard.builder()
                                         .add(CHOICE_BLOCK_INNER_BACKGROUND, false, false)
                                         .add(CHOICE_BLOCK_INNER, false, false)
                                         .build()
                         )
-                        .build(false)
+                        .createCompositeState(false)
         );
     }
 }

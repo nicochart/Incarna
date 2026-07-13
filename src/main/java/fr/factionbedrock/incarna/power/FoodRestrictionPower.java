@@ -1,10 +1,9 @@
 package fr.factionbedrock.incarna.power;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.FoodComponent;
-import net.minecraft.item.ItemStack;
-
 import java.util.function.Function;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ItemStack;
 
 public class FoodRestrictionPower extends ItemUseRestrictionPower
 {
@@ -15,7 +14,7 @@ public class FoodRestrictionPower extends ItemUseRestrictionPower
 
     @Override public boolean canUse(ItemStack stack)
     {
-        FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
+        FoodProperties foodComponent = stack.get(DataComponents.FOOD);
         if (foodComponent == null) {return true;}
         else {return super.canUse(stack);}
     }

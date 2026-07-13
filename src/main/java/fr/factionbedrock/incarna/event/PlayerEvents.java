@@ -4,8 +4,8 @@ import fr.factionbedrock.incarna.power.IncarnaPower;
 import fr.factionbedrock.incarna.power.ItemUseRestrictionPower;
 import fr.factionbedrock.incarna.util.PlayerHelper;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.ItemStack;
 
 public class PlayerEvents
 {
@@ -13,8 +13,8 @@ public class PlayerEvents
     {
         UseItemCallback.EVENT.register((player, world, hand) ->
         {
-            ItemStack stack = player.getStackInHand(hand);
-            if (player.isCreative() || player.isSpectator()) {return TypedActionResult.pass(stack);}
+            ItemStack stack = player.getItemInHand(hand);
+            if (player.isCreative() || player.isSpectator()) {return InteractionResultHolder.pass(stack);}
             boolean canUse = true;
             for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
             {
@@ -24,8 +24,8 @@ public class PlayerEvents
                 }
             }
 
-            if (!canUse) {return TypedActionResult.fail(stack);}
-            return TypedActionResult.pass(stack);
+            if (!canUse) {return InteractionResultHolder.fail(stack);}
+            return InteractionResultHolder.pass(stack);
         });
     }
 }

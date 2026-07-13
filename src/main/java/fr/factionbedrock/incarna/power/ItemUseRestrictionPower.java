@@ -1,9 +1,8 @@
 package fr.factionbedrock.incarna.power;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-
 import java.util.function.Function;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemUseRestrictionPower extends IncarnaPower
 {
@@ -14,7 +13,7 @@ public class ItemUseRestrictionPower extends IncarnaPower
         this.canUse = canUse;
     }
 
-    @Override public void onRemovedFromPlayer(PlayerEntity player) {}
+    @Override public void onRemovedFromPlayer(Player player) {}
 
     public boolean canUse(ItemStack stack) {return canUse.apply(stack);}
 }

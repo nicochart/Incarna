@@ -1,35 +1,34 @@
 package fr.factionbedrock.incarna.power;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-
 import java.util.function.Function;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 
 public abstract class ActionOnProjectileHitPower extends IncarnaPower
 {
-    private final Function<ProjectileEntity, Boolean> shouldAction;
-    private final Function<ProjectileEntity, Boolean> shouldCancelHitOrDeflect;
+    private final Function<Projectile, Boolean> shouldAction;
+    private final Function<Projectile, Boolean> shouldCancelHitOrDeflect;
 
-    public ActionOnProjectileHitPower(Function<ProjectileEntity, Boolean> shouldActionAndCancelHitOrDeflect)
+    public ActionOnProjectileHitPower(Function<Projectile, Boolean> shouldActionAndCancelHitOrDeflect)
     {
         this(shouldActionAndCancelHitOrDeflect, shouldActionAndCancelHitOrDeflect);
     }
 
-    public ActionOnProjectileHitPower(Function<ProjectileEntity, Boolean> shouldAction, Function<ProjectileEntity, Boolean> shouldCancelHitOrDeflect)
+    public ActionOnProjectileHitPower(Function<Projectile, Boolean> shouldAction, Function<Projectile, Boolean> shouldCancelHitOrDeflect)
     {
         super();
         this.shouldAction = shouldAction;
         this.shouldCancelHitOrDeflect = shouldCancelHitOrDeflect;
     }
 
-    @Override public void onRemovedFromPlayer(PlayerEntity player) {}
+    @Override public void onRemovedFromPlayer(Player player) {}
 
-    public boolean shouldCancelHitOrDeflect(ProjectileEntity projectile) {return shouldCancelHitOrDeflect.apply(projectile);}
+    public boolean shouldCancelHitOrDeflect(Projectile projectile) {return shouldCancelHitOrDeflect.apply(projectile);}
 
-    public void tryTick(PlayerEntity player, ProjectileEntity projectile)
+    public void tryTick(Player player, Projectile projectile)
     {
         if (shouldAction.apply(projectile)) {this.tick(player);}
     }
 
-    protected abstract void tick(PlayerEntity player);
+    protected abstract void tick(Player player);
 }

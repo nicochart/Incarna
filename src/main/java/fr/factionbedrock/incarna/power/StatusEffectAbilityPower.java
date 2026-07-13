@@ -1,27 +1,26 @@
 package fr.factionbedrock.incarna.power;
 
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.function.Function;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
 
 public class StatusEffectAbilityPower extends AbilityPower
 {
-    private final Function<Integer, StatusEffectInstance> levelToEffectInstance;
+    private final Function<Integer, MobEffectInstance> levelToEffectInstance;
 
-    public StatusEffectAbilityPower(Function<Integer, StatusEffectInstance> levelToEffectInstance)
+    public StatusEffectAbilityPower(Function<Integer, MobEffectInstance> levelToEffectInstance)
     {
         this(levelToEffectInstance, (player) -> true);
     }
 
-    public StatusEffectAbilityPower(Function<Integer, StatusEffectInstance> levelToEffectInstance, Function<ServerPlayerEntity, Boolean> canTick)
+    public StatusEffectAbilityPower(Function<Integer, MobEffectInstance> levelToEffectInstance, Function<ServerPlayer, Boolean> canTick)
     {
         super(canTick);
         this.levelToEffectInstance = levelToEffectInstance;
     }
 
-    @Override protected void tick(ServerPlayerEntity player, int level)
+    @Override protected void tick(ServerPlayer player, int level)
     {
-        player.addStatusEffect(levelToEffectInstance.apply(level));
+        player.addEffect(levelToEffectInstance.apply(level));
     }
 }

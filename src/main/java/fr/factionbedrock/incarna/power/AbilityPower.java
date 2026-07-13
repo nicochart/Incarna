@@ -1,26 +1,25 @@
 package fr.factionbedrock.incarna.power;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.function.Function;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 public abstract class AbilityPower extends IncarnaPower
 {
-    private final Function<ServerPlayerEntity, Boolean> condition;
+    private final Function<ServerPlayer, Boolean> condition;
 
-    public AbilityPower(Function<ServerPlayerEntity, Boolean> canTick)
+    public AbilityPower(Function<ServerPlayer, Boolean> canTick)
     {
         super();
         this.condition = canTick;
     }
 
-    @Override public void onRemovedFromPlayer(PlayerEntity player) {}
+    @Override public void onRemovedFromPlayer(Player player) {}
 
-    public void tryTick(ServerPlayerEntity player, int level)
+    public void tryTick(ServerPlayer player, int level)
     {
         if (condition.apply(player)) {this.tick(player, level);}
     }
 
-    protected abstract void tick(ServerPlayerEntity player, int level);
+    protected abstract void tick(ServerPlayer player, int level);
 }

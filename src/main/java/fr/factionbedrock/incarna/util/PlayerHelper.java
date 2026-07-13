@@ -10,21 +10,20 @@ import fr.factionbedrock.incarna.registry.IncarnaMobEffects;
 import fr.factionbedrock.incarna.registry.IncarnaSpecies;
 import fr.factionbedrock.incarna.registry.IncarnaTeams;
 import fr.factionbedrock.incarna.registry.IncarnaTrackedData;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.player.Player;
 
 public class PlayerHelper
 {
-    public static int getPlayerIncarnaExperience(PlayerEntity player) {return player.getDataTracker().get(IncarnaTrackedData.INCARNA_EXPERIENCE);}
-    public static IncarnaTeam getPlayerTeam(PlayerEntity player) {return IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));}
-    public static IncarnaSpecie getPlayerSpecies(PlayerEntity player) {return IncarnaSpecies.SPECIES_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.SPECIES));}
+    public static int getPlayerIncarnaExperience(Player player) {return player.getEntityData().get(IncarnaTrackedData.INCARNA_EXPERIENCE);}
+    public static IncarnaTeam getPlayerTeam(Player player) {return IncarnaTeams.TEAM_NAMES.get(player.getEntityData().get(IncarnaTrackedData.TEAM));}
+    public static IncarnaSpecie getPlayerSpecies(Player player) {return IncarnaSpecies.SPECIES_NAMES.get(player.getEntityData().get(IncarnaTrackedData.SPECIES));}
 
-    public static int getPlayerIncarnaLevel(PlayerEntity player)
+    public static int getPlayerIncarnaLevel(Player player)
     {
         return getPlayerIncarnaLevelFromExperience(getPlayerIncarnaExperience(player));
     }
@@ -43,7 +42,7 @@ public class PlayerHelper
         else {return 10;}
     }
 
-    public static ExperienceLevelProgressionInfo getPlayerIncarnaLevelProgressionInfo(PlayerEntity player)
+    public static ExperienceLevelProgressionInfo getPlayerIncarnaLevelProgressionInfo(Player player)
     {
         int xp = getPlayerIncarnaExperience(player);
         if (xp < ExperienceHelper.LEVEL_1) {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_0, ExperienceHelper.LEVEL_1, xp);}
@@ -58,25 +57,25 @@ public class PlayerHelper
         else {return new ExperienceLevelProgressionInfo(ExperienceHelper.LEVEL_9, ExperienceHelper.LEVEL_10, xp);}
     }
 
-    public static boolean arePlayersInSameTeam(PlayerEntity player1, PlayerEntity player2) {return getPlayerTeam(player1) == getPlayerTeam(player2);}
+    public static boolean arePlayersInSameTeam(Player player1, Player player2) {return getPlayerTeam(player1) == getPlayerTeam(player2);}
 
-    public static void deltaPlayerIncarnaExperience(PlayerEntity player, ExperienceDeltaReason reason)
+    public static void deltaPlayerIncarnaExperience(Player player, ExperienceDeltaReason reason)
     {
         int previousExperience = getPlayerIncarnaExperience(player);
         float multiplier = reason.delta() > 0 ? ServerLoadedConfig.XP_GAIN_MULTIPLIER : ServerLoadedConfig.XP_LOSS_MULTIPLIER;
-        player.getDataTracker().set(IncarnaTrackedData.INCARNA_EXPERIENCE, Math.clamp((int) (previousExperience + multiplier * reason.delta()), ExperienceHelper.MIN_INCARNA_EXPERIENCE, ExperienceHelper.MAX_INCARNA_EXPERIENCE));
+        player.getEntityData().set(IncarnaTrackedData.INCARNA_EXPERIENCE, Math.clamp((int) (previousExperience + multiplier * reason.delta()), ExperienceHelper.MIN_INCARNA_EXPERIENCE, ExperienceHelper.MAX_INCARNA_EXPERIENCE));
     }
 
-    public static void updatePlayerChoice(PlayerEntity player, TrackedData<String> choiceTrackedData, IncarnaChoice previousChoice, IncarnaChoice newChoice)
+    public static void updatePlayerChoice(Player player, EntityDataAccessor<String> choiceTrackedData, IncarnaChoice previousChoice, IncarnaChoice newChoice)
     {
-        player.getDataTracker().set(choiceTrackedData, newChoice.name());
+        player.getEntityData().set(choiceTrackedData, newChoice.name());
         PlayerHelper.onPlayerChangeTeamOrSpecies(player, previousChoice, newChoice);
     }
 
-    public static void onPlayerChangeTeamOrSpecies(PlayerEntity player, IncarnaChoice previousChoice, IncarnaChoice newChoice)
+    public static void onPlayerChangeTeamOrSpecies(Player player, IncarnaChoice previousChoice, IncarnaChoice newChoice)
     {
         String folder = newChoice instanceof IncarnaTeam ? "team/" : "species/";
-        if (player instanceof ServerPlayerEntity serverPlayer)
+        if (player instanceof ServerPlayer serverPlayer)
         {
             IncarnaHelper.runFunction(serverPlayer, folder + newChoice.name());
             removeModifiersOnPlayerChangeTeamOrSpecies(serverPlayer, previousChoice);
@@ -84,9 +83,9 @@ public class PlayerHelper
         resetPlayerIncarnaExperience(player);
     }
 
-    public static boolean canUseAbility(PlayerEntity player) {return !player.hasStatusEffect(IncarnaMobEffects.ABILITY_COOLDOWN) && getPlayerSpecies(player).hasAbility();}
+    public static boolean canUseAbility(Player player) {return !player.hasEffect(IncarnaMobEffects.ABILITY_COOLDOWN) && getPlayerSpecies(player).hasAbility();}
 
-    public static void onPlayerUseAbility(ServerPlayerEntity player)
+    public static void onPlayerUseAbility(ServerPlayer player)
     {
         for (IncarnaPower power : PlayerHelper.getAllPowersFrom(player))
         {
@@ -97,10 +96,10 @@ public class PlayerHelper
         }
         IncarnaSpecie playerSpecie = PlayerHelper.getPlayerSpecies(player);
         IncarnaHelper.runFunction(player, "ability/" + playerSpecie.name());
-        player.addStatusEffect(new StatusEffectInstance(IncarnaMobEffects.ABILITY_COOLDOWN, 600));
+        player.addEffect(new MobEffectInstance(IncarnaMobEffects.ABILITY_COOLDOWN, 600));
     }
 
-    public static List<IncarnaPower> getAllPowersFrom(PlayerEntity player)
+    public static List<IncarnaPower> getAllPowersFrom(Player player)
     {
         IncarnaTeam playerTeam = getPlayerTeam(player);
         IncarnaSpecie playerSpecies = getPlayerSpecies(player);
@@ -111,7 +110,7 @@ public class PlayerHelper
         return powerList;
     }
 
-    public static void removeModifiersOnPlayerChangeTeamOrSpecies(ServerPlayerEntity player, IncarnaChoice previousChoice)
+    public static void removeModifiersOnPlayerChangeTeamOrSpecies(ServerPlayer player, IncarnaChoice previousChoice)
     {
         for (IncarnaPower power : previousChoice.powers())
         {
@@ -119,28 +118,28 @@ public class PlayerHelper
         }
     }
 
-    public static void resetPlayerIncarnaExperience(PlayerEntity player)
+    public static void resetPlayerIncarnaExperience(Player player)
     {
-        player.getDataTracker().set(IncarnaTrackedData.INCARNA_EXPERIENCE, 0);
+        player.getEntityData().set(IncarnaTrackedData.INCARNA_EXPERIENCE, 0);
     }
 
-    public static void resetPlayerChoices(PlayerEntity player)
+    public static void resetPlayerChoices(Player player)
     {
         resetPlayerTeam(player);
         resetPlayerSpecies(player);
     }
 
-    public static void resetPlayerTeam(PlayerEntity player)
+    public static void resetPlayerTeam(Player player)
     {
-        IncarnaTeam previousTeam = IncarnaTeams.TEAM_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.TEAM));
-        player.getDataTracker().set(IncarnaTrackedData.TEAM, IncarnaTeams.DEFAULT.name());
+        IncarnaTeam previousTeam = IncarnaTeams.TEAM_NAMES.get(player.getEntityData().get(IncarnaTrackedData.TEAM));
+        player.getEntityData().set(IncarnaTrackedData.TEAM, IncarnaTeams.DEFAULT.name());
         PlayerHelper.onPlayerChangeTeamOrSpecies(player, previousTeam, IncarnaTeams.DEFAULT);
     }
 
-    public static void resetPlayerSpecies(PlayerEntity player)
+    public static void resetPlayerSpecies(Player player)
     {
-        IncarnaSpecie previousSpecies = IncarnaSpecies.SPECIES_NAMES.get(player.getDataTracker().get(IncarnaTrackedData.SPECIES));
-        player.getDataTracker().set(IncarnaTrackedData.SPECIES, IncarnaSpecies.DEFAULT.name());
+        IncarnaSpecie previousSpecies = IncarnaSpecies.SPECIES_NAMES.get(player.getEntityData().get(IncarnaTrackedData.SPECIES));
+        player.getEntityData().set(IncarnaTrackedData.SPECIES, IncarnaSpecies.DEFAULT.name());
         PlayerHelper.onPlayerChangeTeamOrSpecies(player, previousSpecies, IncarnaSpecies.DEFAULT);
     }
 }
